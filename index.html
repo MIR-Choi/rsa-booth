@@ -37,24 +37,56 @@
     <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></symbol>
   </svg>
 
-  <!-- 파이썬이 준비될 때까지 보이는 화면 -->
-  <div id="loading" class="loading" role="status">
-    <div class="spinner"></div>
-    <p>파이썬 엔진을 불러오는 중…</p>
-    <small>처음 접속하면 10초 정도 걸릴 수 있어요</small>
-    <small class="slow">계속 이 화면이면 인터넷 연결을 확인하고 새로고침해 주세요</small>
-  </div>
+  <!-- 시작 화면: 파이썬을 불러오는 동안에도 보이고, 준비되면 '시작하기' 버튼이 켜진다 -->
+  <section id="intro" class="intro" aria-labelledby="intro-title">
+    <div class="intro-inner">
+      <div class="intro-logo"><svg class="icon"><use href="#i-shield"/></svg></div>
+      <p class="intro-eyebrow">PUBLIC-KEY CRYPTOGRAPHY</p>
+      <h1 id="intro-title" class="intro-title"><span class="hl">RSA</span> 암호 해독 체험관</h1>
+      <p class="intro-desc">소인수분해가 얼마나 어려운지 직접 겪어 보고, RSA가 왜 안전한지 알아봐요</p>
 
-  <div class="app">
+      <div class="intro-formula">
+        <div class="formula-chip easy"><span>곱하기는 한 번에</span><code>61 × 53 = 3,233</code></div>
+        <div class="formula-chip hard"><span>거꾸로는?</span><code>3,233 = ? × ?</code></div>
+      </div>
+
+      <ol class="intro-steps">
+        <li class="intro-step">
+          <div class="intro-step-top"><span class="tab-num">1</span><svg class="icon"><use href="#i-divide"/></svg></div>
+          <b>암산 도전</b><small>두 자리 소수 두 개의 곱 N을 머릿속으로 쪼개 보기</small>
+        </li>
+        <li class="intro-step">
+          <div class="intro-step-top"><span class="tab-num">2</span><svg class="icon"><use href="#i-calc"/></svg></div>
+          <b>계산기 도전</b><small>세 자리 소수가 섞인 N을 계산기로, 시간을 재면서</small>
+        </li>
+        <li class="intro-step">
+          <div class="intro-step-top"><span class="tab-num">3</span><svg class="icon"><use href="#i-cpu"/></svg></div>
+          <b>컴퓨터 도전</b><small>6자리부터 실제 RSA-8192까지, 컴퓨터는 풀 수 있을까?</small>
+        </li>
+        <li class="intro-step">
+          <div class="intro-step-top"><span class="tab-num">4</span><svg class="icon"><use href="#i-unlock"/></svg></div>
+          <b>암호문 해독</b><small>공개키로 잠긴 비밀 메시지를 개인키로 풀어 보기</small>
+        </li>
+      </ol>
+
+      <button id="start" class="btn btn-gradient start-btn" type="button" disabled>
+        <span class="spinner"></span><svg class="icon"><use href="#i-play"/></svg><span id="start-label">준비 중…</span>
+      </button>
+      <small class="intro-hint loading-only">처음 접속하면 파이썬 엔진을 불러오느라 10초 정도 걸릴 수 있어요</small>
+      <small class="intro-hint slow loading-only">계속 이 화면이면 인터넷 연결을 확인하고 새로고침해 주세요</small>
+    </div>
+  </section>
+
+  <div id="app" class="app" inert>
     <header class="topbar">
       <div class="container topbar-inner">
-        <div class="brand">
+        <a id="home" class="brand" href="./" title="처음 화면으로">
           <div class="logo"><svg class="icon"><use href="#i-shield"/></svg></div>
           <div>
             <h1 class="title"><span class="hl">RSA</span> 암호 해독 체험관</h1>
             <p class="subtitle">소인수분해가 얼마나 어려운지 겪어 보고, RSA가 왜 안전한지 알아봐요</p>
           </div>
-        </div>
+        </a>
         <nav class="tabs" role="tablist" aria-label="체험 단계">
           <button class="tab is-active" type="button" role="tab" data-stage="1"><span class="tab-num">1</span>암산 도전</button>
           <button class="tab" type="button" role="tab" data-stage="2"><span class="tab-num">2</span>계산기 도전</button>
@@ -237,15 +269,7 @@
           <svg class="icon panel-icon"><use href="#i-unlock"/></svg>
           <div>
             <h2 class="panel-title">4단계: 암호문 해독하기</h2>
-            <p class="panel-desc">공개키 (N, e)와 암호문만 공개되어 있어요. N을 소인수분해해서 개인키를 만들고 비밀 메시지를 모두 풀어 보세요!</p>
-          </div>
-          <div class="head-tools">
-            <select id="s4-size" class="text-input select" aria-label="키 크기">
-              <option value="2">두 자리 소수 (암산 가능)</option>
-              <option value="3">세 자리 소수 (계산기 필요)</option>
-              <option value="5">다섯 자리 소수 (컴퓨터 필요)</option>
-            </select>
-            <button id="s4-new" class="btn btn-ghost btn-sm" type="button"><svg class="icon"><use href="#i-refresh"/></svg>새 비밀 메시지</button>
+            <p class="panel-desc">공개키 (N, e)와 암호문만 공개되어 있어요. N을 만든 두 소수 p, q로 개인키를 만들어 비밀 메시지를 풀어 보세요!</p>
           </div>
         </header>
 
@@ -255,12 +279,24 @@
               <h3><svg class="icon"><use href="#i-eye"/></svg>공개된 정보</h3>
               <span class="tag">누구나 볼 수 있음</span>
             </div>
+            <div class="row">
+              <select id="s4-size" class="text-input select grow" aria-label="키 크기">
+                <option value="2">두 자리 소수 (암산 가능)</option>
+                <option value="3">세 자리 소수 (계산기 필요)</option>
+                <option value="5">다섯 자리 소수 (컴퓨터 필요)</option>
+              </select>
+              <button id="s4-new" class="btn btn-ghost btn-sm" type="button"><svg class="icon"><use href="#i-refresh"/></svg>새 비밀 메시지</button>
+            </div>
             <div class="key-row">
               <div class="key-val grow"><span>공개키 N</span><b id="s4-n">-</b></div>
               <div class="key-val"><span>공개키 e</span><b id="s4-e">-</b></div>
             </div>
-            <div class="field-label">암호문 C <small>(숫자 하나 = 1바이트)</small></div>
-            <div id="s4-ciphers" class="cipher-list"></div>
+            <div class="field-label cipher-head">
+              <span>암호문 C <small>(숫자 하나 = 1바이트)</small></span>
+              <span id="s4-mine" class="tag tag-secret" hidden>직접 만듦</span>
+              <small id="s4-cipher-count" class="count"></small>
+            </div>
+            <div id="s4-cipher" class="cipher-box"></div>
             <div class="divider"></div>
             <h4 class="sub-head"><svg class="icon"><use href="#i-pen"/></svg>직접 암호문 만들기</h4>
             <form id="s4-enc-form" class="row tight" autocomplete="off">
@@ -274,26 +310,22 @@
               <h3><svg class="icon"><use href="#i-key"/></svg>개인키로 해독하기</h3>
               <span class="tag tag-secret">p, q를 아는 사람만</span>
             </div>
-            <p class="card-desc">N을 소인수분해해서 p와 q를 입력하세요.</p>
-            <div class="answer-row">
-              <input id="s4-p" class="num-input" inputmode="numeric" maxlength="16" placeholder="p" aria-label="p">
-              <span class="times">×</span>
-              <input id="s4-q" class="num-input" inputmode="numeric" maxlength="16" placeholder="q" aria-label="q">
+            <p class="card-desc">N을 만든 두 소수 p, q를 아는 사람만 개인키 d를 만들 수 있어요.</p>
+            <div class="factor-box">
+              <span class="factor-label">N = p × q</span>
+              <div class="factor-eq"><span id="s4-n-again">-</span> = <b id="s4-pq">-</b></div>
             </div>
-            <div class="btn-row">
-              <button class="btn btn-primary grow" type="submit"><svg class="icon"><use href="#i-unlock"/></svg>해독하기</button>
-              <button id="s4-factor" class="btn btn-ghost" type="button"><svg class="icon"><use href="#i-cpu"/></svg>컴퓨터로 N 분해</button>
-            </div>
+            <button class="btn btn-primary btn-lg btn-block decrypt-btn" type="submit"><svg class="icon"><use href="#i-unlock"/></svg>해독하기</button>
             <p id="s4-feedback" class="feedback reserve small" role="status" hidden></p>
             <div class="field-label">해독된 메시지</div>
-            <div id="s4-plains" class="plain-list"></div>
+            <div id="s4-plain" class="plaintext big"></div>
           </form>
 
           <div class="card">
             <div class="card-head">
               <h3><svg class="icon"><use href="#i-list"/></svg>해독 과정</h3>
             </div>
-            <p id="s4-steps-empty" class="empty">p와 q를 넣고 해독하면, 개인키를 만들고 암호를 푸는 계산 과정이 여기에 나타나요.</p>
+            <p id="s4-steps-empty" class="empty">'해독하기'를 누르면, 개인키를 만들고 암호를 푸는 계산 과정이 여기에 나타나요.</p>
             <ol id="s4-steps" class="steps" hidden></ol>
           </div>
         </div>
