@@ -136,6 +136,13 @@ def setup():
     new_secret()
 
 
+def reset():
+    """다음 사람을 위해 키 크기를 처음 것으로 돌리고 새 비밀 메시지를 낸다."""
+    set_value("s4-size", "2")
+    set_value("s4-msg", "")
+    new_secret()
+
+
 # ── 이벤트 ─────────────────────────────────────────────
 
 @when("change", "#s4-size")

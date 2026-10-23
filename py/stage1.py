@@ -24,6 +24,13 @@ def setup():
     new_problem()
 
 
+def reset():
+    """다음 사람을 위해 맞힌 문제 수를 0으로 하고 새 문제를 낸다."""
+    state["solved"] = 0
+    set_text("s1-solved", 0)
+    new_problem()
+
+
 @when("click", "#s1-new")
 def on_new(event):
     new_problem()

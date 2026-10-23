@@ -17,6 +17,7 @@ from dom import comma, el, run_async, set_html, set_state, set_text, show
 TIME_LIMITS = {"rsa2048": 5, "rsa8192": 10}  # 큰 N은 컴퓨터가 난이도마다 이 시간(초)만큼 계산해 보고 포기한다
 HUMAN_SECONDS = 5     # 사람이 계산기로 한 번 나누는 데 걸린다고 가정한 시간(초)
 FRAME_SECONDS = 0.1   # 이만큼 계산할 때마다 화면을 새로 그린다
+PART = 2000           # 이만큼 나눌 때마다 제한 시간이 지났는지 확인한다
 
 # 난이도 목록. 예시 (p, q)는 rsa_examples.py에 정해 두었다.
 LEVELS = {
@@ -40,7 +41,7 @@ LEVELS = {
 HUGE = tuple(TIME_LIMITS)  # 시간 제한을 두고, 숫자를 작은 글씨로 보여 주는 난이도
 
 bags = {}  # 난이도 → 아직 안 뽑은 예시 번호들 (한 바퀴를 다 돌기 전에는 같은 예시가 다시 나오지 않게)
-current = {"level": "small", "index": None, "busy": False}  # index None = 아직 아무 예시도 안 보여 줌
+current = {"level": "small", "index": None, "busy": False, "cancel": False}  # index None = 아직 아무 예시도 안 보여 줌
 
 
 def seconds_text(sec):
@@ -165,14 +166,21 @@ async def attack():
         step = chunk
         if give_up_after:  # 마지막 조각은 남은 시간만큼만 계산해서 제한 시간을 딱 채운다
             step = max(100, min(chunk, int(chunk * (give_up_after - compute) / FRAME_SECONDS)))
-        span = range(d, min(d + 2 * step, limit + 1), 2)
+        stop = min(d + 2 * step, limit + 1)
         t0 = time.perf_counter()
-        found = rsa_math.find_divisor(n, span.start, span.stop)
+        end = d
+        while end < stop:  # PART개씩 끊어서 나누고, 컴퓨터가 갑자기 느려져도 제한 시간이 되면 바로 멈춘다
+            part_end = min(end + 2 * PART, stop)
+            found = rsa_math.find_divisor(n, end, part_end)
+            end = part_end
+            if found or (give_up_after and compute + time.perf_counter() - t0 >= give_up_after):
+                break
         spent = time.perf_counter() - t0
         compute += spent
         if found:
             tried += (found - d) // 2 + 1
             break
+        span = range(d, end, 2)
         tried += len(span)
         d += 2 * len(span)
 
@@ -185,8 +193,10 @@ async def attack():
                 break
         else:
             el("s3-bar").style.width = f"{d / limit * 100:.1f}%"
-        chunk = max(1000, min(2_000_000, int(step * FRAME_SECONDS / max(spent, 1e-4))))
+        chunk = max(1000, min(2_000_000, int(len(span) * FRAME_SECONDS / max(spent, 1e-4))))
         await asyncio.sleep(0.01)
+        if current["cancel"]:  # 처음 화면으로 돌아가면 계산을 그만둔다
+            return
 
     set_text("s3-count", f"{comma(tried)}번")
     set_text("s3-time", seconds_text(compute))
@@ -212,6 +222,9 @@ async def run():
         await attack()
     finally:
         set_busy(False)
+        if current["cancel"]:
+            current["cancel"] = False
+            show_example("small")
 
 
 def show_example(level):
@@ -225,6 +238,16 @@ def show_example(level):
 
 def setup():
     show_example("small")
+
+
+def reset():
+    """다음 사람을 위해 처음 상태(레벨 1)로. 계산 중이면 멈춘 뒤에 돌아간다."""
+    if el("s3-dialog").open:
+        el("s3-dialog").close()
+    if current["busy"]:
+        current["cancel"] = True
+    else:
+        show_example("small")
 
 
 @when("click", ".level-opt")

@@ -68,6 +68,21 @@ def setup():
     enable(False)
 
 
+def reset():
+    """다음 사람을 위해 '도전 시작'을 누르기 전 상태로 되돌린다."""
+    state.update(running=False, round=state["round"] + 1, attempts=0)  # 돌던 시계도 멈춘다
+    set_text("s2-n", "??????")
+    el("s2-n").classList.add("is-blank")
+    set_text("s2-start-label", "도전 시작")
+    el("s2-start-icon").setAttribute("href", "#i-play")
+    set_text("s2-time", "00:00")
+    set_text("s2-attempts", 0)
+    set_value("s2-p", "")
+    set_value("s2-q", "")
+    show("s2-feedback", False)
+    enable(False)
+
+
 @when("click", "#s2-start")
 def on_start(event):
     start()

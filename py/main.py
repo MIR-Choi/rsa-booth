@@ -41,8 +41,11 @@ def on_start(event):
 
 @when("click", "#home")
 def on_home(event):
+    """처음 화면으로 돌아가면서 모든 단계를 처음 상태로 되돌린다 (다음 사람을 위해)."""
     event.preventDefault()
     window.history.replaceState(None, "", window.location.pathname)  # 주소의 #stage-N 지우기
+    for module in (stage1, stage2, stage3, stage4):
+        module.reset()
     show_intro(True)
 
 
