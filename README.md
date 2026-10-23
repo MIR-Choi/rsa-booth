@@ -21,9 +21,6 @@
 - **HTML**: 화면 구조 (`index.html`)
 - **CSS**: 디자인 (`style.css`)
 
-JavaScript는 직접 쓰지 않습니다. [PyScript](https://pyscript.net)가 브라우저 안에서 파이썬을 실행해 주기 때문에,
-서버 없이 GitHub Pages에 그대로 올릴 수 있습니다.
-
 ## 폴더 구조
 
 ```
@@ -31,6 +28,7 @@ index.html        화면 구조 (시작 화면 + 4개 단계)
 style.css         디자인 (검정 배경 + 민트/파랑 포인트)
 pyscript.toml     파이썬 파일 목록 (새 .py 파일을 만들면 여기에도 추가)
 .nojekyll         GitHub Pages가 파일을 그대로 올리게 하는 빈 파일 (지우지 마세요)
+예시 목록.md      3·4단계 예시를 정리한 문서 (사이트는 이 파일을 읽지 않아요)
 py/
   main.py         시작 파일 — 시작 화면, 탭 전환, 각 단계 준비
   rsa_math.py     소수 만들기, 소인수분해, RSA 암호화/복호화 (순수 파이썬)
