@@ -81,13 +81,6 @@ def random_semiprime(p_range, q_range=None):
     return p, q, p * q
 
 
-def semiprime_with_digits(digits):
-    """정확히 digits자리인 N = p × q 를 만든다. (p, q는 비슷한 크기의 소수)"""
-    lo = math.isqrt(10 ** (digits - 1)) + 1
-    hi = math.isqrt(10 ** digits - 1)
-    return random_semiprime((lo, hi))
-
-
 # ── 소인수분해: 작은 수부터 하나씩 나눠 보기 ──────────────
 
 def find_divisor(n, start, stop):
@@ -97,13 +90,6 @@ def find_divisor(n, start, stop):
         if n % d == 0:
             return d
     return None
-
-
-def smallest_factor(n):
-    """n의 가장 작은 소인수."""
-    if n % 2 == 0:
-        return 2
-    return find_divisor(n, 3, math.isqrt(n) + 1) or n
 
 
 # ── RSA 암호화 / 복호화 ─────────────────────────────────
@@ -157,8 +143,8 @@ def bytes_to_text(values):
 
 
 if __name__ == "__main__":
-    p, q, n = semiprime_with_digits(11)
-    print(f"{n:,} = {p} × {q}  (가장 작은 인수: {smallest_factor(n)})")
+    p, q, n = random_semiprime((101, 997))
+    print(f"{n:,} = {p} × {q}  (하나씩 나눠서 찾은 인수: {find_divisor(n, 3, math.isqrt(n) + 1)})")
 
     keys = generate_keys((11, 97))
     secret = encrypt_text("안녕, RSA!", keys["n"], keys["e"])
