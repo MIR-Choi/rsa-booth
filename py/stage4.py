@@ -86,7 +86,7 @@ def new_secret():
     set_text("s4-n", comma(keys["n"]))
     set_text("s4-e", keys["e"])
     set_text("s4-n-again", comma(keys["n"]))
-    set_text("s4-pq", f"{comma(keys['p'])} × {comma(keys['q'])}")
+    set_text("s4-pq", f"{comma(keys['p'])}\u00a0×\u00a0{comma(keys['q'])}")  # \u00a0 = 줄바꿈 없는 띄어쓰기: 줄이 바뀌어도 p × q는 한 줄에
     render_cipher()
     clear_result()
 

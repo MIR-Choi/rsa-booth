@@ -118,7 +118,7 @@ def show_success(n, p, tried):
     el("s3-bar").style.width = "100%"
     set_html(
         "s3-detail",
-        f'<div class="equation">{comma(n)} = {p} × {n // p}</div>'
+        f'<div class="equation">{comma(n)} = {p}\u00a0×\u00a0{n // p}</div>'  # \u00a0 = 줄바꿈 없는 띄어쓰기: 줄이 바뀌어도 p × q는 한 줄에
         f"<p>사람이 계산기로 한 번 나누는 데 {HUMAN_SECONDS}초 걸린다면 → "
         f"<b>{duration_text(tried * HUMAN_SECONDS)}</b></p>",
     )
