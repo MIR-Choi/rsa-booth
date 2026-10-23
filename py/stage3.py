@@ -14,7 +14,7 @@ import rsa_examples
 import rsa_math
 from dom import comma, el, run_async, set_html, set_state, set_text, show
 
-TIME_LIMIT = 10       # 큰 N은 컴퓨터가 이 시간(초)만큼 계산해 보고 포기한다
+TIME_LIMITS = {"large": 5, "rsa8192": 10}  # 큰 N은 컴퓨터가 난이도마다 이 시간(초)만큼 계산해 보고 포기한다
 HUMAN_SECONDS = 5     # 사람이 계산기로 한 번 나누는 데 걸린다고 가정한 시간(초)
 FRAME_SECONDS = 0.1   # 이만큼 계산할 때마다 화면을 새로 그린다
 
@@ -30,14 +30,14 @@ LEVELS = {
     },
     "large": {
         "pairs": rsa_examples.LEVEL3,
-        "note": f"300자리 소수 두 개를 곱한 수예요. 실제 RSA에서 쓰는 크기라서, 컴퓨터에게 {TIME_LIMIT}초만 줘 볼게요.",
+        "note": f"300자리 소수 두 개를 곱한 수예요. 실제 RSA에서 쓰는 크기라서, 컴퓨터에게 {TIME_LIMITS['large']}초만 줘 볼게요.",
     },
     "rsa8192": {
         "pairs": rsa_examples.LEVEL4,
-        "note": f"실제 8192비트 RSA 키의 N이에요. 흔히 쓰는 RSA-2048보다 4배 긴 키입니다. 컴퓨터에게 {TIME_LIMIT}초만 줘 볼게요.",
+        "note": f"실제 8192비트 RSA 키의 N이에요. 흔히 쓰는 RSA-2048보다 4배 긴 키입니다. 컴퓨터에게 {TIME_LIMITS['rsa8192']}초만 줘 볼게요.",
     },
 }
-HUGE = ("large", "rsa8192")  # 시간 제한을 두고, 숫자를 작은 글씨로 보여 주는 난이도
+HUGE = tuple(TIME_LIMITS)  # 시간 제한을 두고, 숫자를 작은 글씨로 보여 주는 난이도
 
 bags = {}  # 난이도 → 아직 안 뽑은 예시 번호들 (한 바퀴를 다 돌기 전에는 같은 예시가 다시 나오지 않게)
 current = {"level": "small", "index": None, "busy": False}  # index None = 아직 아무 예시도 안 보여 줌
@@ -123,7 +123,7 @@ def show_success(n, p, tried):
     )
 
 
-def show_failure(n, tried, compute):
+def show_failure(n, tried, compute, limit):
     set_text("s3-verdict", "해독 불가능")
     set_state("s3-verdict", "err")
     rate = tried / compute
@@ -133,7 +133,7 @@ def show_failure(n, tried, compute):
     log_universe = log_years - math.log10(rsa_math.UNIVERSE_AGE_YEARS)
     set_html(
         "s3-detail",
-        f"<p>{TIME_LIMIT}초 동안 <b>{comma(tried)}번</b> 나눠 봤지만(1초에 약 {comma(int(rate))}번) "
+        f"<p>{limit}초 동안 <b>{comma(tried)}번</b> 나눠 봤지만(1초에 약 {comma(int(rate))}번) "
         f"인수를 하나도 찾지 못했어요.</p>"
         f'<ul class="estimates">'
         f"<li><span>끝까지 나눠 보려면</span><b>최대 {power_html(log_needed)}번</b></li>"
@@ -152,7 +152,7 @@ async def attack():
     level = current["level"]
     n = current_example()["n"]
     limit = math.isqrt(n)
-    give_up_after = TIME_LIMIT if level in HUGE else None
+    give_up_after = TIME_LIMITS.get(level)
     reset_result()
     set_text("s3-verdict", "계산 중…")
     set_state("s3-verdict", "run")
@@ -163,7 +163,7 @@ async def attack():
     found = None
     while d <= limit:  # N은 홀수끼리의 곱이라 2로는 나눌 필요가 없다
         step = chunk
-        if give_up_after:  # 마지막 조각은 남은 시간만큼만 계산해서 딱 TIME_LIMIT초를 채운다
+        if give_up_after:  # 마지막 조각은 남은 시간만큼만 계산해서 제한 시간을 딱 채운다
             step = max(100, min(chunk, int(chunk * (give_up_after - compute) / FRAME_SECONDS)))
         span = range(d, min(d + 2 * step, limit + 1), 2)
         t0 = time.perf_counter()
@@ -193,7 +193,7 @@ async def attack():
     if found:
         show_success(n, found, tried)
     else:
-        show_failure(n, tried, compute)
+        show_failure(n, tried, compute, give_up_after)
 
 
 def set_busy(on):
