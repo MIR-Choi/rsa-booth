@@ -773,6 +773,11 @@ sup { font-size: 0.7em; line-height: 0; }
 .byte-table td.ch { font-family: var(--font); font-size: 1.05rem; font-weight: 800; color: var(--text); text-align: center; }
 .byte-table th:last-child { text-align: center; }
 
+/* ── 움직임 줄이기를 켠 컴퓨터(운영체제 설정)에서는 깜빡임·튀어나옴 같은 효과를 끈다 ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
 /* ── 좁은 화면(태블릿·휴대폰): 한 줄로 쌓고 스크롤 ─────── */
 @media (max-width: 1000px) {
   html { font-size: 15px; }

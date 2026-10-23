@@ -1,9 +1,10 @@
-"""RSA 암호 해독 체험관 — 시작 파일.
+"""RSA 암호 해독 체험하기 — 시작 파일.
 
 시작 화면과 탭(단계) 전환을 맡고, 각 단계(stage1~4)를 준비한다.
-주소 끝에 #stage-3 처럼 붙이면 시작 화면 없이 그 단계가 바로 열린다.
+주소 끝에 #stage-3 처럼 붙이면 시작 화면 없이 그 단계가 바로 열린다 (페이지를 연 뒤에 바꿔도 된다).
 """
 from pyscript import document, when, window
+from pyscript.ffi import create_proxy
 
 import stage1
 import stage2
@@ -49,16 +50,32 @@ def on_home(event):
     show_intro(True)
 
 
+def warm_fonts():
+    """글꼴은 화면에 나온 글자의 조각만 받는다. 숨어 있는 단계의 글자와 비밀 메시지 글자도 미리 받아 두면,
+    단계를 처음 열 때 글꼴이 바뀌며 깜빡이지 않고, 나중에 인터넷이 끊겨도 글꼴이 그대로 나온다."""
+    text = el("app").textContent + "".join(stage4.SECRET_MESSAGES)
+    for weight in (400, 600, 700, 800):
+        document.fonts.load(f"{weight} 16px Pretendard", text)
+
+
+def open_from_address():
+    """주소가 #stage-N 이면 시작 화면 없이 그 단계를 연다. 맞으면 True."""
+    stage = window.location.hash.replace("#stage-", "")
+    if stage in STAGES:
+        show_stage(stage)
+        show_intro(False)
+        return True
+    return False
+
+
 for module in (stage1, stage2, stage3, stage4):
     module.setup()
 
-start = window.location.hash.replace("#stage-", "")
-if start in STAGES:
-    show_stage(start)
-    show_intro(False)
-else:
+if not open_from_address():
     show_stage("1")
+window.addEventListener("hashchange", create_proxy(lambda event: open_from_address()))
 
 set_text("start-label", "시작하기")
 el("start").disabled = False
 el("intro").classList.add("is-ready")
+warm_fonts()

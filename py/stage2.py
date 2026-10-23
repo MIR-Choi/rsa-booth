@@ -5,7 +5,7 @@ import time
 from pyscript import when
 
 import rsa_math
-from dom import comma, el, message, prime_list, run_async, set_text, set_value, show, to_int, value_of
+from dom import comma, el, josa, message, prime_list, run_async, set_text, set_value, show, to_int, value_of
 
 P_RANGE = (23, 997)   # 작은 쪽 소수: 두~세 자리 (너무 쉬운 11~19는 뺐어요)
 Q_RANGE = (101, 997)  # 큰 쪽 소수: 세 자리
@@ -99,6 +99,10 @@ def on_submit(event):
     event.preventDefault()
     if not state["running"]:
         return
+    blank = [box for box in ("s2-p", "s2-q") if not value_of(box)]
+    if len(blank) == 1:  # 한 칸만 채우고 Enter를 누르면 빈 칸으로 넘어간다
+        el(blank[0]).focus()
+        return
     p, q = to_int(value_of("s2-p")), to_int(value_of("s2-q"))
     n = state["n"]
     if p is None or q is None:
@@ -112,6 +116,8 @@ def on_submit(event):
             f"정답! {comma(n)} = {min(p, q)} × {max(p, q)} · 걸린 시간 {mmss(state['final'])} · 시도 {state['attempts']}회",
             "ok",
         )
+    elif p * q == n:  # 1 × N
+        message("s2-feedback", "1 × N은 너무 쉽죠? 1이 아닌 두 소수를 찾아보세요.", "err")
     else:
         message("s2-feedback", f"{p} × {q} = {comma(p * q)} — 아직 아니에요. 계속 나눠 보세요!", "err")
 
@@ -119,8 +125,9 @@ def on_submit(event):
 @when("click", "#s2-giveup")
 def on_giveup(event):
     finish()
+    q = state["q"]
     message(
         "s2-feedback",
-        f"정답은 {comma(state['n'])} = {state['p']} × {state['q']} 였어요. 컴퓨터라면 1초도 안 걸려요 → 3단계에서 확인!",
+        f"정답은 {comma(state['n'])} = {state['p']} × {q}{josa(q, '이었어요', '였어요')}. 컴퓨터라면 1초도 안 걸려요 → 3단계에서 확인!",
         "info",
     )

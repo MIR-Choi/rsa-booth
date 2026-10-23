@@ -2,7 +2,7 @@
 from pyscript import when
 
 import rsa_math
-from dom import comma, el, message, prime_list, set_text, set_value, show, to_int, value_of
+from dom import comma, el, josa, message, prime_list, set_text, set_value, show, to_int, value_of
 
 PRIME_RANGE = (11, 97)  # 두 자리 소수
 
@@ -47,24 +47,29 @@ def on_hint(event):
         set_text("s1-hint-label", "정답 보기")
     else:
         state["done"] = True
-        message("s1-feedback", f"정답은 {comma(state['n'])} = {p} × {q} 입니다.", "info")
+        message("s1-feedback", f"정답은 {comma(state['n'])} = {p} × {q}입니다.", "info")
 
 
 @when("click", "#s1-giveup")
 def on_giveup(event):
     state["done"] = True
-    message("s1-feedback", f"정답은 {comma(state['n'])} = {state['p']} × {state['q']} 였어요. '새로운 문제'로 다시 도전해 보세요!", "info")
+    q = state["q"]
+    message("s1-feedback", f"정답은 {comma(state['n'])} = {state['p']} × {q}{josa(q, '이었어요', '였어요')}. '새로운 문제'로 다시 도전해 보세요!", "info")
 
 
 @when("submit", "#s1-form")
 def on_submit(event):
     event.preventDefault()
+    blank = [box for box in ("s1-p", "s1-q") if not value_of(box)]
+    if len(blank) == 1:  # 한 칸만 채우고 Enter를 누르면 빈 칸으로 넘어간다
+        el(blank[0]).focus()
+        return
     p, q = to_int(value_of("s1-p")), to_int(value_of("s1-q"))
     n = state["n"]
     if p is None or q is None:
         message("s1-feedback", "p와 q 칸에 숫자를 입력해 주세요.", "err")
     elif p * q != n:
-        message("s1-feedback", f"아쉬워요! {p} × {q} = {comma(p * q)} 이에요. 다시 도전!", "err")
+        message("s1-feedback", f"아쉬워요! {p} × {q} = {comma(p * q)}{josa(p * q, '이에요', '예요')}. 다시 도전!", "err")
     elif 1 in (p, q):
         message("s1-feedback", "1 × N은 너무 쉽죠? 1이 아닌 두 소수를 찾아보세요.", "err")
     else:

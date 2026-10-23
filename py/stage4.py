@@ -6,7 +6,7 @@ import random
 from pyscript import when
 
 import rsa_math
-from dom import comma, el, message, run_async, set_html, set_text, set_value, show, value_of
+from dom import comma, el, josa, message, run_async, set_html, set_text, set_value, show, value_of
 
 KEY_SIZES = {
     "2": (11, 97),        # 두 자리 소수 → 1단계처럼 암산 가능
@@ -112,7 +112,7 @@ def steps_html(p, q, n, e, phi, d, cipher, plain, text):
         f'<li class="inline"><b>p × q = N 확인</b><code>{comma(p)} × {comma(q)} = {comma(n)} ✓</code></li>'
         f'<li class="inline"><b>φ(N) = (p − 1) × (q − 1)</b><code>{comma(p - 1)} × {comma(q - 1)} = {comma(phi)}</code></li>'
         f'<li class="inline"><b>개인키 d = e⁻¹ mod φ(N)</b><code>d = {comma(d)}</code>'
-        f"<small>{e} × {comma(d)}을 {comma(phi)}로 나눈 나머지가 1</small></li>"
+        f"<small>{e} × {comma(d)}{josa(d, '을', '를')} {comma(phi)}{josa(phi, '으로', '로')} 나눈 나머지가 1</small></li>"
         f"<li><b>숫자마다 M = C<sup>d</sup> mod N</b>"
         f"<code>{comma(c0)}<sup>{comma(d)}</sup> mod {comma(n)} = {m0}</code>"
         f"<small>암호문의 앞부분 — 바이트 몇 개가 모여 글자 하나가 돼요</small>"
@@ -166,7 +166,7 @@ def on_decrypt(event):
     set_html("s4-steps", steps_html(p, q, n, e, phi, d, state["cipher"], plain, text))
     show("s4-steps")
     show("s4-steps-empty", False)
-    message("s4-feedback", f"개인키 d = {comma(d)}를 만들어 암호문을 풀었어요!", "ok")
+    message("s4-feedback", f"개인키 d = {comma(d)}{josa(d, '을', '를')} 만들어 암호문을 풀었어요!", "ok")
     run_async(type_out(text))
 
 
