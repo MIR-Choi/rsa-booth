@@ -43,6 +43,12 @@ def on_hint(event):
         message("s1-feedback", f"정답은 {comma(state['n'])} = {p} × {q} 입니다.", "info")
 
 
+@when("click", "#s1-giveup")
+def on_giveup(event):
+    state["done"] = True
+    message("s1-feedback", f"정답은 {comma(state['n'])} = {state['p']} × {state['q']} 였어요. '새로운 문제'로 다시 도전해 보세요!", "info")
+
+
 @when("submit", "#s1-form")
 def on_submit(event):
     event.preventDefault()

@@ -41,35 +41,18 @@
   <section id="intro" class="intro" aria-labelledby="intro-title">
     <div class="intro-inner">
       <div class="intro-logo"><svg class="icon"><use href="#i-shield"/></svg></div>
-      <p class="intro-eyebrow">PUBLIC-KEY CRYPTOGRAPHY</p>
       <h1 id="intro-title" class="intro-title"><span class="hl">RSA</span> 암호 해독 체험하기</h1>
       <p class="intro-desc">소인수분해가 얼마나 어려운지 직접 겪어 보고, RSA가 왜 안전한지 알아봐요</p>
-
-      <div class="intro-formula">
-        <div class="formula-chip easy"><span>곱하기는 한 번에</span><code>61 × 53 = 3,233</code></div>
-        <div class="formula-chip hard"><span>거꾸로는?</span><code>3,233 = ? × ?</code></div>
-      </div>
+      <p class="intro-formula"><code class="easy">61 × 53 = 3,233</code>은 금방 계산되지만, <code class="hard">3,233 = ? × ?</code>는 어떨까요?</p>
 
       <ol class="intro-steps">
-        <li class="intro-step">
-          <div class="intro-step-top"><span class="tab-num">1</span><svg class="icon"><use href="#i-divide"/></svg></div>
-          <b>암산 도전</b><small>두 자리 소수 두 개의 곱 N을 머릿속으로 쪼개 보기</small>
-        </li>
-        <li class="intro-step">
-          <div class="intro-step-top"><span class="tab-num">2</span><svg class="icon"><use href="#i-calc"/></svg></div>
-          <b>계산기 도전</b><small>세 자리 소수가 섞인 N을 계산기로 시간을 재며 쪼개 보기</small>
-        </li>
-        <li class="intro-step">
-          <div class="intro-step-top"><span class="tab-num">3</span><svg class="icon"><use href="#i-cpu"/></svg></div>
-          <b>컴퓨터 도전</b><small>6자리부터 실제 RSA-8192까지, 컴퓨터는 풀 수 있을까?</small>
-        </li>
-        <li class="intro-step">
-          <div class="intro-step-top"><span class="tab-num">4</span><svg class="icon"><use href="#i-unlock"/></svg></div>
-          <b>암호문 해독</b><small>공개키로 잠긴 비밀 메시지를 개인키로 풀어 보기</small>
-        </li>
+        <li><span class="tab-num">1</span><b>암산 도전</b><small>두 자리 소수 두 개의 곱 N을 머릿속으로 쪼개 보기</small></li>
+        <li><span class="tab-num">2</span><b>계산기 도전</b><small>세 자리 소수가 섞인 N을 계산기로 시간을 재며 쪼개 보기</small></li>
+        <li><span class="tab-num">3</span><b>컴퓨터 도전</b><small>6자리부터 실제 RSA-8192까지, 컴퓨터는 풀 수 있을까?</small></li>
+        <li><span class="tab-num">4</span><b>암호문 해독</b><small>공개키로 잠긴 비밀 메시지를 개인키로 풀어 보기</small></li>
       </ol>
 
-      <button id="start" class="btn btn-gradient start-btn" type="button" disabled>
+      <button id="start" class="btn btn-primary start-btn" type="button" disabled>
         <span class="spinner"></span><svg class="icon"><use href="#i-play"/></svg><span id="start-label">준비 중…</span>
       </button>
       <small class="intro-hint loading-only">처음 접속하면 파이썬 엔진을 불러오느라 10초 정도 걸릴 수 있어요</small>
@@ -128,6 +111,7 @@
                 <input id="s1-q" class="num-input" inputmode="numeric" maxlength="6" placeholder="q" aria-label="q">
               </div>
               <button class="btn btn-primary btn-lg btn-block" type="submit"><svg class="icon"><use href="#i-check"/></svg>정답 확인</button>
+              <button id="s1-giveup" class="btn btn-text" type="button">포기하고 정답 보기</button>
             </form>
             <p id="s1-feedback" class="feedback reserve" role="status" hidden></p>
           </div>
@@ -139,7 +123,7 @@
         </div>
 
         <aside class="lesson">
-          <h3><svg class="icon"><use href="#i-bulb"/></svg>핵심 학습 포인트</h3>
+          <h3>알아 두기</h3>
           <p>숫자가 작을 때는 금방 두 소수로 쪼갤 수 있어요. RSA에서 N을 p와 q로 쪼갤 수 있으면, 누구나 비밀키를 만들어 암호를 풀 수 있습니다.</p>
         </aside>
       </section>
@@ -190,7 +174,7 @@
         </div>
 
         <aside class="lesson">
-          <h3><svg class="icon"><use href="#i-bulb"/></svg>핵심 학습 포인트</h3>
+          <h3>알아 두기</h3>
           <p>자리 수가 조금만 늘어도 나눠 봐야 하는 횟수가 확 늘어나요. 곱하기는 한 번이면 끝나지만, 거꾸로 N에서 p와 q를 찾는 건 훨씬 어렵습니다. 이 <b class="accent">한쪽 방향으로만 쉬운 계산</b>이 RSA의 비밀이에요.</p>
         </aside>
       </section>
@@ -232,7 +216,7 @@
             </div>
             <div id="s3-n" class="target-n">-</div>
             <p id="s3-note" class="card-desc"></p>
-            <button id="s3-run" class="btn btn-gradient btn-lg btn-block run-btn" type="button"><svg class="icon"><use href="#i-cpu"/></svg>컴퓨터에게 소인수분해 시키기</button>
+            <button id="s3-run" class="btn btn-primary btn-lg btn-block run-btn" type="button"><svg class="icon"><use href="#i-cpu"/></svg>컴퓨터에게 소인수분해 시키기</button>
           </div>
 
           <div class="card">
@@ -251,7 +235,7 @@
         </div>
 
         <aside class="lesson">
-          <h3><svg class="icon"><use href="#i-bulb"/></svg>핵심 학습 포인트</h3>
+          <h3>알아 두기</h3>
           <p>여기서 컴퓨터는 가장 단순한 방법(하나씩 나눠 보기)을 썼어요. 훨씬 똑똑한 알고리즘(GNFS)을 써도 2020년 250자리 수(RSA-250)를 분해하는 데 CPU 코어 하나로 약 <b class="accent">2,700년</b> 걸릴 만큼의 계산이 필요했어요. 지금 널리 쓰는 RSA-2048(617자리)도 아직 아무도 분해하지 못했는데, RSA-8192는 그보다 4배 긴 키입니다.</p>
         </aside>
 
@@ -331,7 +315,7 @@
         </div>
 
         <aside class="lesson">
-          <h3><svg class="icon"><use href="#i-bulb"/></svg>핵심 학습 포인트</h3>
+          <h3>알아 두기</h3>
           <div>
             <p>공개키 (N, e)만 있으면 누구나 <b class="accent">C = M<sup>e</sup> mod N</b>으로 잠글 수 있지만, 여는 열쇠 d는 p와 q를 알아야만 계산할 수 있어요.</p>
             <p class="footnote">※ 체험용으로 글자를 바이트 단위로 하나씩 암호화했어요. 실제 RSA는 메시지를 큰 수 하나로 바꾸고 패딩(OAEP)을 더해 암호화합니다.</p>
