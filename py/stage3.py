@@ -1,7 +1,7 @@
 """3단계: 컴퓨터에게 소인수분해 시키기 — 난이도마다 정해진 예시 중 하나를 무작위로 뽑아 분해해 본다.
 
 컴퓨터도 사람과 똑같이 3, 5, 7, 9, … 를 차례로 나눠 본다.
-다만 1초에 수백만 번 나눌 수 있을 뿐이다. 그래도 600자리 N 앞에서는 소용이 없다.
+다만 1초에 수백만 번 나눌 수 있을 뿐이다. 그래도 RSA-2048의 617자리 N 앞에서는 소용이 없다.
 """
 import asyncio
 import math
@@ -14,7 +14,7 @@ import rsa_examples
 import rsa_math
 from dom import comma, el, run_async, set_html, set_state, set_text, show
 
-TIME_LIMITS = {"large": 5, "rsa8192": 10}  # 큰 N은 컴퓨터가 난이도마다 이 시간(초)만큼 계산해 보고 포기한다
+TIME_LIMITS = {"rsa2048": 5, "rsa8192": 10}  # 큰 N은 컴퓨터가 난이도마다 이 시간(초)만큼 계산해 보고 포기한다
 HUMAN_SECONDS = 5     # 사람이 계산기로 한 번 나누는 데 걸린다고 가정한 시간(초)
 FRAME_SECONDS = 0.1   # 이만큼 계산할 때마다 화면을 새로 그린다
 
@@ -28,9 +28,9 @@ LEVELS = {
         "pairs": rsa_examples.LEVEL2,
         "note": "다섯~여섯 자리 소수 두 개를 곱한 수예요. 사람이 계산기로 풀면 며칠에서 몇 주가 걸려요.",
     },
-    "large": {
+    "rsa2048": {
         "pairs": rsa_examples.LEVEL3,
-        "note": f"300자리 소수 두 개를 곱한 수예요. 실제 RSA에서 쓰는 크기라서, 컴퓨터에게 {TIME_LIMITS['large']}초만 줘 볼게요.",
+        "note": f"실제 2048비트 RSA 키의 N이에요. 지금 가장 널리 쓰이는 크기라서, 컴퓨터에게 {TIME_LIMITS['rsa2048']}초만 줘 볼게요.",
     },
     "rsa8192": {
         "pairs": rsa_examples.LEVEL4,
