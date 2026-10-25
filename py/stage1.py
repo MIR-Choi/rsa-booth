@@ -2,7 +2,7 @@
 from pyscript import when
 
 import rsa_math
-from dom import comma, el, josa, message, prime_list, set_text, set_value, show, to_int, value_of
+from dom import answer_text, comma, el, focus_empty, josa, message, prime_list, set_text, set_value, show, to_int, value_of
 
 PRIME_RANGE = (11, 97)  # 두 자리 소수
 
@@ -53,16 +53,13 @@ def on_hint(event):
 @when("click", "#s1-giveup")
 def on_giveup(event):
     state["done"] = True
-    q = state["q"]
-    message("s1-feedback", f"정답은 {comma(state['n'])} = {state['p']} × {q}{josa(q, '이었어요', '였어요')}. '새로운 문제'로 다시 도전해 보세요!", "info")
+    message("s1-feedback", f"{answer_text(state['n'], state['p'], state['q'])} '새로운 문제'로 다시 도전해 보세요!", "info")
 
 
 @when("submit", "#s1-form")
 def on_submit(event):
     event.preventDefault()
-    blank = [box for box in ("s1-p", "s1-q") if not value_of(box)]
-    if len(blank) == 1:  # 한 칸만 채우고 Enter를 누르면 빈 칸으로 넘어간다
-        el(blank[0]).focus()
+    if focus_empty("s1-p", "s1-q"):
         return
     p, q = to_int(value_of("s1-p")), to_int(value_of("s1-q"))
     n = state["n"]

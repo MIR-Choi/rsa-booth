@@ -37,14 +37,18 @@ body {
   font-family: var(--font);
   font-size: 1rem;
   line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;      /* 한글 낱말이 줄 끝에서 둘로 갈라지지 않게 (예: 617자 / 리) */
+  overflow-wrap: break-word; /* 그래도 칸보다 긴 낱말은 끊어서 넘치지 않게 */
+}
+
+/* 배경: 옅은 모눈 무늬 (본문과 시작 화면이 함께 쓴다) */
+body, .intro {
   background-color: var(--bg);
   background-image:
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: 3rem 3rem;
-  -webkit-font-smoothing: antialiased;
-  word-break: keep-all;      /* 한글 낱말이 줄 끝에서 둘로 갈라지지 않게 (예: 617자 / 리) */
-  overflow-wrap: break-word; /* 그래도 칸보다 긴 낱말은 끊어서 넘치지 않게 */
 }
 
 h1, h2, h3, h4, p { margin: 0; }
@@ -76,11 +80,6 @@ sup { font-size: 0.7em; line-height: 0; }
   overflow: auto;
   padding: 2rem 5vw;
   text-align: center;
-  background-color: var(--bg);
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 3rem 3rem;
   transition: opacity 0.35s, visibility 0.35s;
 }
 .intro.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -427,10 +426,9 @@ sup { font-size: 0.7em; line-height: 0; }
   border: 1px solid;
   border-radius: 0.75rem;
 }
-.feedback.small { min-height: 0; padding: 0.5rem 0.8rem; font-size: 0.9rem; margin-top: 0.7rem; }
+.feedback.small { min-height: 2.8rem; padding: 0.5rem 0.8rem; font-size: 0.9rem; }
 /* reserve: 숨겨져 있어도 자리를 차지해서, 문구가 나타날 때 화면이 덜컹거리지 않게 */
 .feedback.reserve[hidden] { display: flex !important; visibility: hidden; }
-.feedback.reserve.small { min-height: 2.8rem; margin-top: 0; }
 .feedback[data-state="ok"]   { color: var(--mint);   border-color: rgba(62, 230, 193, 0.4); background: rgba(62, 230, 193, 0.08); }
 .feedback[data-state="err"]  { color: var(--danger); border-color: rgba(255, 93, 122, 0.4); background: rgba(255, 93, 122, 0.08); }
 .feedback[data-state="info"] { color: var(--blue);   border-color: rgba(77, 168, 255, 0.4); background: rgba(77, 168, 255, 0.08); }
@@ -645,7 +643,6 @@ sup { font-size: 0.7em; line-height: 0; }
 .dialog::backdrop { background: rgba(0, 0, 0, 0.72); backdrop-filter: blur(3px); }
 .dialog h3 { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; color: var(--mint); }
 .dialog p { margin: 0.6rem 0 0.8rem; color: var(--text-dim); }
-.dialog-body h4 { margin: 0.6rem 0 0.3rem; color: var(--text); }
 .dialog-actions { display: flex; justify-content: flex-end; }
 .r-label { font-size: 0.8rem; color: var(--text-faint); }
 .bignum {
@@ -813,8 +810,6 @@ sup { font-size: 0.7em; line-height: 0; }
   .primes-card { max-height: 22rem; }
   .target-n { font-size: 2.4rem; }
   .target-n.is-huge { flex: none; max-height: 10rem; }
-}
-@media (max-width: 1000px) {
   .intro { place-items: start center; }
   .intro-title { font-size: 2.8rem; }
   .intro-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }

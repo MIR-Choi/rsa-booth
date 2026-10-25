@@ -83,7 +83,7 @@ def random_semiprime(p_range, q_range=None):
 
 # ── 소인수분해: 작은 수부터 하나씩 나눠 보기 ──────────────
 
-BATCH = 16             # 큰 N은 홀수를 이만큼씩 묶어서 검사한다 (find_divisor 설명 참고)
+BATCH = 128            # 큰 N은 홀수를 이만큼씩 묶어서 검사한다 (find_divisor 설명 참고)
 BATCH_MIN_BITS = 1024  # 이보다 작은 N은 하나씩 바로 나누는 쪽이 더 빠르다
 
 
@@ -92,9 +92,9 @@ def find_divisor(n, start, stop):
     나누어떨어지는 첫 수를 돌려주고, 없으면 None.
 
     RSA-2048, RSA-8192처럼 N이 아주 길면 한 번 나누는 데도 시간이 오래 걸린다.
-    그래서 홀수 16개를 곱한 수 P로 N을 먼저 한 번 나눠 작은 나머지 r을 구하고,
-    16개의 홀수로는 긴 N 대신 짧은 r을 나눠 본다.
-    d는 P의 약수라서 N % d == r % d 이므로, 홀수 하나하나를 모두 확인하는 것은 똑같다."""
+    그래서 홀수 128개를 모두 곱한 수 P와 N의 최대공약수를 한 번에 구한다.
+    최대공약수가 1이면 N과 P에 공통인 약수가 없으니, 128개 중 어느 것도 N을 나누지 못한다.
+    1보다 클 때만 그 묶음을 하나씩 나눠 본다. 홀수 하나하나를 모두 확인하는 것은 똑같다."""
     if n.bit_length() < BATCH_MIN_BITS:
         for d in range(start, stop, 2):
             if n % d == 0:
@@ -102,10 +102,10 @@ def find_divisor(n, start, stop):
         return None
     for lo in range(start, stop, 2 * BATCH):
         group = range(lo, min(lo + 2 * BATCH, stop), 2)
-        r = n % math.prod(group)
-        for d in group:
-            if r % d == 0:
-                return d
+        if math.gcd(n, math.prod(group)) > 1:
+            for d in group:
+                if n % d == 0:
+                    return d
     return None
 
 

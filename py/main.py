@@ -14,6 +14,7 @@ import stage4
 from dom import el, run_async, set_text
 
 STAGES = ("1", "2", "3", "4")
+MODULES = (stage1, stage2, stage3, stage4)
 screen = {"lock": None}  # 화면 꺼짐 방지 (다른 창으로 가면 브라우저가 풀고, 돌아오면 다시 건다)
 
 
@@ -48,7 +49,7 @@ def on_home(event):
     """처음 화면으로 돌아가면서 모든 단계를 처음 상태로 되돌린다 (다음 사람을 위해)."""
     event.preventDefault()
     window.history.replaceState(None, "", window.location.pathname)  # 주소의 #stage-N 지우기
-    for module in (stage1, stage2, stage3, stage4):
+    for module in MODULES:
         module.reset()
     show_intro(True)
 
@@ -100,7 +101,7 @@ def open_from_address():
     return False
 
 
-for module in (stage1, stage2, stage3, stage4):
+for module in MODULES:
     module.setup()
 
 if not open_from_address():

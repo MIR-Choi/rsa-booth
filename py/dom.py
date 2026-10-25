@@ -26,6 +26,15 @@ def set_value(element_id, value):
     el(element_id).value = str(value)
 
 
+def focus_empty(*element_ids):
+    """칸 중 하나만 비어 있으면 그 칸으로 커서를 옮기고 True. (한 칸만 채우고 Enter를 누르면 빈 칸으로 넘어가게)"""
+    empty = [element_id for element_id in element_ids if not value_of(element_id)]
+    if len(empty) == 1:
+        el(empty[0]).focus()
+        return True
+    return False
+
+
 def show(element_id, visible=True):
     el(element_id).hidden = not visible
 
@@ -89,6 +98,11 @@ def josa(n, after_batchim, otherwise):
     if after_batchim == "으로":
         return otherwise if sound in (None, "ㄹ") else after_batchim
     return otherwise if sound is None else after_batchim
+
+
+def answer_text(n, p, q):
+    """포기했을 때 보여 주는 정답. 예) '정답은 1,271 = 31 × 41이었어요.' / '… = 11 × 29였어요.'"""
+    return f"정답은 {comma(n)} = {p} × {q}{josa(q, '이었어요', '였어요')}."
 
 
 def prime_list(list_id, title_id, title, primes):

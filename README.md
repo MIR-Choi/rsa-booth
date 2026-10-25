@@ -29,7 +29,7 @@
 ```
 index.html        화면 구조 (시작 화면 + 4개 단계)
 style.css         디자인 (검정 배경 + 민트/파랑 포인트)
-pyscript.toml     파이썬 파일 목록 (새 .py 파일을 만들면 여기에도 추가)
+pyscript.json     파이썬 파일 목록 (새 .py 파일을 만들면 여기와 index.html의 '미리 받기' 목록에 추가)
 sw.js             서비스 워커 — 사이트 파일과 파이썬 엔진을 브라우저에 저장해 두고, 인터넷이 없을 때 대신 내줌
 .nojekyll         GitHub Pages가 파일을 그대로 올리게 하는 빈 파일 (지우지 마세요)
 py/

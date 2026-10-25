@@ -21,6 +21,16 @@
   <link rel="preload" href="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.asm.wasm" as="fetch" crossorigin>
   <link rel="preload" href="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/python_stdlib.zip" as="fetch" crossorigin>
   <link rel="preload" href="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.asm.js" as="script" crossorigin>
+  <!-- 이 사이트의 파이썬 파일도 미리 받아 두면, 파이썬 엔진이 준비되자마자 바로 실행된다 (pyscript.json의 목록과 같게) -->
+  <link rel="preload" href="pyscript.json" as="fetch" crossorigin>
+  <link rel="preload" href="py/main.py" as="fetch" crossorigin>
+  <link rel="preload" href="py/rsa_math.py" as="fetch" crossorigin>
+  <link rel="preload" href="py/rsa_examples.py" as="fetch" crossorigin>
+  <link rel="preload" href="py/dom.py" as="fetch" crossorigin>
+  <link rel="preload" href="py/stage1.py" as="fetch" crossorigin>
+  <link rel="preload" href="py/stage2.py" as="fetch" crossorigin>
+  <link rel="preload" href="py/stage3.py" as="fetch" crossorigin>
+  <link rel="preload" href="py/stage4.py" as="fetch" crossorigin>
 
   <!-- 글꼴 (Pretendard는 화면에 나온 글자가 들어 있는 조각만 내려받는 dynamic-subset 판) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
@@ -339,6 +349,8 @@
     </main>
   </div>
 
-  <script type="py" src="./py/main.py" config="./pyscript.toml"></script>
+  <!-- 파이썬 시작 파일. main.py가 import 하는 파이썬 파일들은 pyscript.json에 적어 두면 브라우저 안으로 가져온다
+       (설정을 JSON으로 두면 PyScript가 TOML 해석기를 따로 내려받지 않아서 더 빨리 열린다) -->
+  <script type="py" src="./py/main.py" config="./pyscript.json"></script>
 </body>
 </html>

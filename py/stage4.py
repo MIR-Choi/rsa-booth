@@ -50,7 +50,7 @@ TABLE_ROWS = 6  # 해독 과정 표에 보여 줄 글자 수
 
 state = {"n": 0, "e": 0, "p": 0, "q": 0, "cipher": [], "mine": False, "last": None}
 bag = []  # 아직 안 뽑은 메시지들 (한 바퀴를 다 돌기 전에는 같은 메시지가 다시 나오지 않게)
-reveal = {"round": 0}
+typing = {"round": 0}  # 해독한 글자를 하나씩 보여 주는 애니메이션의 차례 번호 (바뀌면 하던 애니메이션은 멈춘다)
 
 
 def draw_message():
@@ -72,7 +72,7 @@ def render_cipher():
 
 
 def clear_result():
-    reveal["round"] += 1  # 진행 중인 글자 애니메이션 멈추기
+    typing["round"] += 1  # 진행 중인 글자 애니메이션 멈추기
     show("s4-feedback", False)
     show("s4-steps", False)
     show("s4-steps-empty")
@@ -122,11 +122,11 @@ def steps_html(p, q, n, e, phi, d, cipher, plain, text):
 
 
 async def type_out(text):
-    reveal["round"] += 1
-    my_round = reveal["round"]
+    typing["round"] += 1
+    my_round = typing["round"]
     box = el("s4-plain")
     for k in range(1, len(text) + 1):
-        if reveal["round"] != my_round:
+        if typing["round"] != my_round:
             return
         box.textContent = text[:k]
         await asyncio.sleep(0.05)

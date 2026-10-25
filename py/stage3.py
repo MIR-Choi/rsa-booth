@@ -124,7 +124,14 @@ def show_success(n, p, tried):
     )
 
 
-def show_failure(n, tried, compute, limit):
+def show_progress(tried, compute, ratio):
+    """계산하는 동안: 나눠 본 횟수, 계산한 시간, 진행 막대(ratio는 0~1)."""
+    set_text("s3-count", f"{comma(tried)}번")
+    set_text("s3-time", seconds_text(compute))
+    el("s3-bar").style.width = f"{min(ratio, 1) * 100:.1f}%"
+
+
+def show_failure(n, tried, compute, time_limit):
     set_text("s3-verdict", "해독 불가능")
     set_state("s3-verdict", "err")
     rate = tried / compute
@@ -134,7 +141,7 @@ def show_failure(n, tried, compute, limit):
     log_universe = log_years - math.log10(rsa_math.UNIVERSE_AGE_YEARS)
     set_html(
         "s3-detail",
-        f"<p>{limit}초 동안 <b>{comma(tried)}번</b> 나눠 봤지만(1초에 약 {comma(int(rate))}번) "
+        f"<p>{time_limit}초 동안 <b>{comma(tried)}번</b> 나눠 봤지만(1초에 약 {comma(int(rate))}번) "
         f"인수를 하나도 찾지 못했어요.</p>"
         f'<ul class="estimates">'
         f"<li><span>끝까지 나눠 보려면</span><b>최대 {power_html(log_needed)}번</b></li>"
@@ -148,62 +155,56 @@ def show_failure(n, tried, compute, limit):
 
 # ── 컴퓨터의 소인수분해 ─────────────────────────────────
 
+def divide(n, start, stop, deadline):
+    """start부터 stop 직전까지의 홀수로 n을 나눠 본다. 돌려주는 값: (찾은 인수 또는 None, 어디까지 나눠 봤는지)
+    PART개마다 시계를 봐서, 컴퓨터가 갑자기 느려져도 deadline(time.perf_counter 기준)을 넘기지 않는다."""
+    end = start
+    while end < stop:
+        part_end = min(end + 2 * PART, stop)
+        found = rsa_math.find_divisor(n, end, part_end)
+        end = part_end
+        if found or time.perf_counter() >= deadline:
+            return found, end
+    return None, end
+
+
 async def attack():
     """3, 5, 7, 9, … 로 차례로 나눠 본다. 중간중간 화면을 갱신하기 위해 조금씩 끊어서 계산한다."""
-    level = current["level"]
     n = current_example()["n"]
     limit = math.isqrt(n)
-    give_up_after = TIME_LIMITS.get(level)
+    time_limit = TIME_LIMITS.get(current["level"])  # None이면 인수를 찾을 때까지
     reset_result()
     set_text("s3-verdict", "계산 중…")
     set_state("s3-verdict", "run")
     set_html("s3-detail", '<p class="empty">3, 5, 7, 9, … 차례로 나눠 보는 중…</p>')
     await asyncio.sleep(0.05)
 
-    d, tried, compute, chunk = 3, 0, 0.0, 2000
+    d, tried, compute, chunk = 3, 0, 0.0, 2000  # 다음에 나눌 홀수, 나눠 본 횟수, 계산한 시간(초), 한 번에 나눌 개수
     found = None
     while d <= limit:  # N은 홀수끼리의 곱이라 2로는 나눌 필요가 없다
-        step = chunk
-        if give_up_after:  # 마지막 조각은 남은 시간만큼만 계산해서 제한 시간을 딱 채운다
-            step = max(100, min(chunk, int(chunk * (give_up_after - compute) / FRAME_SECONDS)))
-        stop = min(d + 2 * step, limit + 1)
+        step, deadline = chunk, math.inf
         t0 = time.perf_counter()
-        end = d
-        while end < stop:  # PART개씩 끊어서 나누고, 컴퓨터가 갑자기 느려져도 제한 시간이 되면 바로 멈춘다
-            part_end = min(end + 2 * PART, stop)
-            found = rsa_math.find_divisor(n, end, part_end)
-            end = part_end
-            if found or (give_up_after and compute + time.perf_counter() - t0 >= give_up_after):
-                break
+        if time_limit:  # 마지막 조각은 남은 시간만큼만 계산해서 제한 시간을 딱 채운다
+            step = max(100, min(chunk, int(chunk * (time_limit - compute) / FRAME_SECONDS)))
+            deadline = t0 + time_limit - compute
+        found, end = divide(n, d, min(d + 2 * step, limit + 1), deadline)
         spent = time.perf_counter() - t0
-        compute += spent
-        if found:
-            tried += (found - d) // 2 + 1
+        compute += spent  # 화면을 그리는 시간은 빼고, 실제로 계산한 시간만 센다
+        done = len(range(d, found + 1 if found else end, 2))  # 이번에 나눠 본 홀수의 개수
+        tried += done
+        d += 2 * done
+        show_progress(tried, compute, compute / time_limit if time_limit else d / limit)
+        if found or (time_limit and compute >= 0.999 * time_limit):
             break
-        span = range(d, end, 2)
-        tried += len(span)
-        d += 2 * len(span)
-
-        set_text("s3-count", f"{comma(tried)}번")
-        set_text("s3-time", seconds_text(compute))
-        if give_up_after:
-            ratio = compute / give_up_after  # 화면을 그리는 시간은 빼고, 실제로 계산한 시간만 센다
-            el("s3-bar").style.width = f"{min(ratio, 1) * 100:.1f}%"
-            if ratio >= 0.999:
-                break
-        else:
-            el("s3-bar").style.width = f"{d / limit * 100:.1f}%"
-        chunk = max(1000, min(2_000_000, int(len(span) * FRAME_SECONDS / max(spent, 1e-4))))
+        chunk = max(1000, min(2_000_000, int(done * FRAME_SECONDS / max(spent, 1e-4))))
         await asyncio.sleep(0.01)
         if current["cancel"]:  # 처음 화면으로 돌아가면 계산을 그만둔다
             return
 
-    set_text("s3-count", f"{comma(tried)}번")
-    set_text("s3-time", seconds_text(compute))
     if found:
         show_success(n, found, tried)
     else:
-        show_failure(n, tried, compute, give_up_after)
+        show_failure(n, tried, compute, time_limit)
 
 
 def set_busy(on):
