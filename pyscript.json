@@ -1,4 +1,5 @@
 {
+  "plugins": ["!deprecations-manager", "!donkey", "!py-editor", "!py-game", "!py-terminal"],
   "files": {
     "./py/rsa_math.py": "./rsa_math.py",
     "./py/rsa_examples.py": "./rsa_examples.py",

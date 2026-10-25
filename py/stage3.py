@@ -62,7 +62,10 @@ def duration_text(sec):
 def power_html(log10_value):
     """아주 큰 수를 '3.2 × 10²⁸⁵' 꼴로."""
     exp = math.floor(log10_value)
-    return f"{10 ** (log10_value - exp):.1f} × 10<sup>{exp}</sup>"
+    mantissa = round(10 ** (log10_value - exp), 1)
+    if mantissa >= 10:  # 9.96 × 10⁵처럼 앞자리가 반올림으로 10.0이 되면 '10.0 × 10⁵'가 아니라 '1.0 × 10⁶'으로
+        mantissa, exp = 1.0, exp + 1
+    return f"{mantissa:.1f} × 10<sup>{exp}</sup>"
 
 
 # ── 예시 뽑기 ───────────────────────────────────────────

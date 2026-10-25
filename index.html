@@ -21,6 +21,12 @@
   <link rel="preload" href="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.asm.wasm" as="fetch" crossorigin>
   <link rel="preload" href="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/python_stdlib.zip" as="fetch" crossorigin>
   <link rel="preload" href="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.asm.js" as="script" crossorigin>
+  <link rel="preload" href="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide-lock.json" as="fetch" crossorigin>
+  <!-- PyScript는 파일 하나를 받아서 읽어 봐야 다음에 받을 파일을 안다. 이렇게 줄줄이 받는 파일도 처음부터 함께 받는다.
+       파일 이름 끝(-BEsfJxiI 등)은 PyScript 버전마다 다르다. PyScript를 올리면 개발자 도구(F12)의 Network 탭에서 새 이름을 보고 바꿀 것. -->
+  <link rel="modulepreload" href="https://pyscript.net/releases/2025.8.1/core-BEsfJxiI.js">
+  <link rel="modulepreload" href="https://pyscript.net/releases/2025.8.1/error-CYIJakmx.js">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/pyodide/v0.28.1/full/pyodide.mjs">
   <!-- 이 사이트의 파이썬 파일도 미리 받아 두면, 파이썬 엔진이 준비되자마자 바로 실행된다 (pyscript.json의 목록과 같게) -->
   <link rel="preload" href="pyscript.json" as="fetch" crossorigin>
   <link rel="preload" href="py/main.py" as="fetch" crossorigin>
@@ -36,8 +42,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap">
 
-  <!-- PyScript: 브라우저 안에서 파이썬을 실행해 준다 -->
-  <link rel="stylesheet" href="https://pyscript.net/releases/2025.8.1/core.css">
+  <!-- PyScript: 브라우저 안에서 파이썬을 실행해 준다
+       (PyScript의 core.css는 코드 편집기·터미널용이라 넣지 않았다. 화면이 처음 나올 때 기다릴 파일이 하나 줄어든다) -->
   <script type="module" src="https://pyscript.net/releases/2025.8.1/core.js"></script>
 
   <link rel="stylesheet" href="style.css">
