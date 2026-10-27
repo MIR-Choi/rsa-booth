@@ -1,6 +1,6 @@
 """RSA 암호 해독 체험하기 — 시작 파일.
 
-시작 화면과 탭(단계) 전환을 맡고, 각 단계(stage1~4)를 준비한다.
+시작 화면과 탭(단계) 전환을 맡고, 각 단계(stage1~5)를 준비한다.
 주소 끝에 #stage-3 처럼 붙이면 시작 화면 없이 그 단계가 바로 열린다 (페이지를 연 뒤에 바꿔도 된다).
 준비가 끝나면 글꼴을 미리 받고, 인터넷 없이도 열리도록 파일을 저장해 두고(sw.js), 화면이 꺼지지 않게 한다.
 """
@@ -11,10 +11,11 @@ import stage1
 import stage2
 import stage3
 import stage4
+import stage5
 from dom import el, run_async, set_text
 
-STAGES = ("1", "2", "3", "4")
-MODULES = (stage1, stage2, stage3, stage4)
+STAGES = ("1", "2", "3", "4", "5")
+MODULES = (stage1, stage2, stage3, stage4, stage5)
 screen = {"lock": None}  # 화면 꺼짐 방지 (다른 창으로 가면 브라우저가 풀고, 돌아오면 다시 건다)
 
 
@@ -32,9 +33,11 @@ def show_intro(visible):
     el("app").inert = visible  # 시작 화면 뒤의 버튼이 키보드로 눌리지 않게
 
 
-@when("click", ".tab")
+@when("click", "[data-stage]")
 def on_tab(event):
+    """위쪽 탭, 또는 1단계 아래쪽의 '2단계로' 버튼."""
     show_stage(event.currentTarget.getAttribute("data-stage"))
+    window.scrollTo(0, 0)  # 좁은 화면에서 아래쪽 버튼을 눌러도 새 단계가 맨 위부터 보이게
 
 
 @when("click", "#start")
@@ -57,7 +60,7 @@ def on_home(event):
 def warm_fonts():
     """글꼴은 화면에 나온 글자의 조각만 받는다. 숨어 있는 단계의 글자와 비밀 메시지 글자도 미리 받아 두면,
     단계를 처음 열 때 글꼴이 바뀌며 깜빡이지 않고, 나중에 인터넷이 끊겨도 글꼴이 그대로 나온다."""
-    text = el("app").textContent + "".join(stage4.SECRET_MESSAGES)
+    text = el("app").textContent + "".join(stage5.SECRET_MESSAGES)
     for weight in (400, 600, 700, 800):
         document.fonts.load(f"{weight} 16px Pretendard", text)
 

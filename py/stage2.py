@@ -1,122 +1,81 @@
-"""2단계: 계산기로 소인수분해하기 — 두~세 자리 소수 × 세 자리 소수, 시간 재기."""
-import asyncio
-import time
-
+"""2단계: 암산으로 소인수분해하기 — 두 자리 소수 두 개를 곱한 N."""
 from pyscript import when
 
 import rsa_math
-from dom import answer_text, comma, el, focus_empty, message, prime_list, run_async, set_text, set_value, show, to_int, value_of
+from dom import answer_text, comma, el, focus_empty, josa, message, prime_list, set_text, set_value, show, to_int, value_of
 
-P_RANGE = (23, 997)   # 작은 쪽 소수: 두~세 자리 (너무 쉬운 11~19는 뺐어요)
-Q_RANGE = (101, 997)  # 큰 쪽 소수: 세 자리
-LIST_RANGE = (11, 997)  # 옆에 보여 줄 소수 목록 범위
-CONTROLS = ("s2-p", "s2-q", "s2-check", "s2-plus", "s2-giveup")
+PRIME_RANGE = (11, 97)  # 두 자리 소수
 
-state = {"p": 0, "q": 0, "n": 0, "attempts": 0, "started": 0.0, "final": 0.0, "running": False, "round": 0}
+state = {"p": 0, "q": 0, "n": 0, "hints": 0, "done": False, "solved": 0}
 
 
-def mmss(seconds):
-    m, s = divmod(int(seconds), 60)
-    return f"{m:02d}:{s:02d}"
-
-
-def elapsed():
-    return time.perf_counter() - state["started"]
-
-
-async def tick(round_id):
-    while state["running"] and state["round"] == round_id:
-        set_text("s2-time", mmss(elapsed()))
-        await asyncio.sleep(0.25)
-
-
-def enable(on):
-    for control_id in CONTROLS:
-        el(control_id).disabled = not on
-
-
-def show_round(started):
-    """새 문제를 낸 화면(started=True), 또는 '도전 시작'을 누르기 전 화면(False)."""
-    set_text("s2-n", comma(state["n"]) if started else "??????")
-    el("s2-n").classList.toggle("is-blank", not started)
-    set_text("s2-start-label", "새로운 문제" if started else "도전 시작")
-    el("s2-start-icon").setAttribute("href", "#i-refresh" if started else "#i-play")
-    set_text("s2-time", "00:00")
-    set_text("s2-attempts", 0)
+def new_problem():
+    p, q, n = rsa_math.random_semiprime(PRIME_RANGE)
+    state.update(p=p, q=q, n=n, hints=0, done=False)
+    set_text("s2-n", comma(n))
+    set_text("s2-hint-label", "힌트")
     set_value("s2-p", "")
     set_value("s2-q", "")
     show("s2-feedback", False)
-    enable(started)
-
-
-def start():
-    p, q, n = rsa_math.random_semiprime(P_RANGE, Q_RANGE)
-    state.update(p=p, q=q, n=n, attempts=0, started=time.perf_counter(), running=True, round=state["round"] + 1)
-    show_round(True)
-    run_async(tick(state["round"]))
-
-
-def finish():
-    state["running"] = False
-    state["final"] = elapsed()
-    set_text("s2-time", mmss(state["final"]))
-    enable(False)
-
-
-def add_attempt():
-    state["attempts"] += 1
-    set_text("s2-attempts", state["attempts"])
 
 
 def setup():
-    prime_list("s2-primes", "s2-primes-title", "두~세 자리 소수", rsa_math.primes_between(*LIST_RANGE))
-    enable(False)
+    prime_list("s2-primes", "s2-primes-title", "두 자리 소수", rsa_math.primes_between(*PRIME_RANGE))
+    new_problem()
 
 
 def reset():
-    """다음 사람을 위해 '도전 시작'을 누르기 전 상태로 되돌린다."""
-    state.update(running=False, round=state["round"] + 1, attempts=0)  # 돌던 시계도 멈춘다
-    show_round(False)
+    """다음 사람을 위해 맞힌 문제 수를 0으로 하고 새 문제를 낸다."""
+    state["solved"] = 0
+    set_text("s2-solved", 0)
+    new_problem()
 
 
-@when("click", "#s2-start")
-def on_start(event):
-    start()
+@when("click", "#s2-new")
+def on_new(event):
+    new_problem()
     el("s2-p").focus()
 
 
-@when("click", "#s2-plus")
-def on_plus(event):
-    add_attempt()
+@when("click", "#s2-hint")
+def on_hint(event):
+    p, q = state["p"], state["q"]
+    state["hints"] += 1
+    if state["hints"] == 1:
+        tens = p // 10 * 10
+        message("s2-feedback", f"힌트: 작은 소수 p는 {tens}~{tens + 9} 사이에 있어요.", "info")
+        set_text("s2-hint-label", "정답 보기")
+    else:
+        state["done"] = True
+        message("s2-feedback", f"정답은 {comma(state['n'])} = {p} × {q}입니다.", "info")
+
+
+@when("click", "#s2-giveup")
+def on_giveup(event):
+    state["done"] = True
+    message("s2-feedback", f"{answer_text(state['n'], state['p'], state['q'])} '새로운 문제'로 다시 도전해 보세요!", "info")
 
 
 @when("submit", "#s2-form")
 def on_submit(event):
     event.preventDefault()
-    if not state["running"]:
-        return
     if focus_empty("s2-p", "s2-q"):
         return
     p, q = to_int(value_of("s2-p")), to_int(value_of("s2-q"))
     n = state["n"]
     if p is None or q is None:
         message("s2-feedback", "p와 q 칸에 숫자를 입력해 주세요.", "err")
-        return
-    add_attempt()
-    if p * q != n:
-        message("s2-feedback", f"{p} × {q} = {comma(p * q)} — 아직 아니에요. 계속 나눠 보세요!", "err")
+    elif p * q != n:
+        message("s2-feedback", f"아쉬워요! {p} × {q} = {comma(p * q)}{josa(p * q, '이에요', '예요')}. 다시 도전!", "err")
     elif 1 in (p, q):
         message("s2-feedback", "1 × N은 너무 쉽죠? 1이 아닌 두 소수를 찾아보세요.", "err")
     else:
-        finish()
+        if not state["done"]:
+            state["done"] = True
+            state["solved"] += 1
+            set_text("s2-solved", state["solved"])
         message(
             "s2-feedback",
-            f"정답! {comma(n)} = {min(p, q)} × {max(p, q)} · 걸린 시간 {mmss(state['final'])} · 시도 {state['attempts']}회",
+            f"정답! {comma(n)} = {min(p, q)} × {max(p, q)} — 이 두 소수가 바로 개인키의 재료예요.",
             "ok",
         )
-
-
-@when("click", "#s2-giveup")
-def on_giveup(event):
-    finish()
-    message("s2-feedback", f"{answer_text(state['n'], state['p'], state['q'])} 컴퓨터라면 1초도 안 걸려요 → 3단계에서 확인!", "info")

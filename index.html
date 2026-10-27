@@ -37,6 +37,7 @@
   <link rel="preload" href="py/stage2.py" as="fetch" crossorigin>
   <link rel="preload" href="py/stage3.py" as="fetch" crossorigin>
   <link rel="preload" href="py/stage4.py" as="fetch" crossorigin>
+  <link rel="preload" href="py/stage5.py" as="fetch" crossorigin>
 
   <!-- 글꼴 (Pretendard는 화면에 나온 글자가 들어 있는 조각만 내려받는 dynamic-subset 판) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
@@ -65,6 +66,11 @@
     <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></symbol>
     <symbol id="i-list" viewBox="0 0 24 24"><path d="M10 6h11M10 12h11M10 18h11"/><path d="M4 6h1v4"/><path d="M4 10h2"/><path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/></symbol>
     <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
+    <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
   </svg>
 
   <!-- 시작 화면: 파이썬을 불러오는 동안에도 보이고, 준비되면 '시작하기' 버튼이 켜진다 -->
@@ -76,10 +82,11 @@
       <p class="intro-formula"><code class="easy">61 × 53 = 3,233</code>은 금방 계산되지만, <code class="hard">3,233 = ? × ?</code>는 어떨까요?</p>
 
       <ol class="intro-steps">
-        <li><span class="tab-num">1</span><b>암산 도전</b><small>두 자리 소수 두 개의 곱 N을 머릿속으로 쪼개 보기</small></li>
-        <li><span class="tab-num">2</span><b>계산기 도전</b><small>세 자리 소수가 섞인 N을 계산기로 시간을 재며 쪼개 보기</small></li>
-        <li><span class="tab-num">3</span><b>컴퓨터 도전</b><small>6자리부터 실제 RSA-8192까지, 컴퓨터는 풀 수 있을까?</small></li>
-        <li><span class="tab-num">4</span><b>암호문 해독</b><small>공개키로 잠긴 비밀 메시지를 개인키로 풀어 보기</small></li>
+        <li><span class="tab-num">1</span><b>공개키·개인키</b><small>숫자 쪼개기가 컴퓨터 보안과 무슨 상관인지 알아보기</small></li>
+        <li><span class="tab-num">2</span><b>암산 도전</b><small>두 자리 소수 두 개의 곱 N을 머릿속으로 쪼개 보기</small></li>
+        <li><span class="tab-num">3</span><b>계산기 도전</b><small>세 자리 소수가 섞인 N을 계산기로 시간을 재며 쪼개 보기</small></li>
+        <li><span class="tab-num">4</span><b>컴퓨터 도전</b><small>6자리부터 실제 <span class="nowrap">RSA-8192</span>까지, 컴퓨터는 풀 수 있을까?</small></li>
+        <li><span class="tab-num">5</span><b>암호문 해독</b><small>공개키로 잠긴 비밀 메시지를 개인키로 풀어 보기</small></li>
       </ol>
 
       <button id="start" class="btn btn-primary start-btn" type="button" disabled>
@@ -101,10 +108,11 @@
           </div>
         </a>
         <nav class="tabs" role="tablist" aria-label="체험 단계">
-          <button class="tab is-active" type="button" role="tab" data-stage="1"><span class="tab-num">1</span>암산 도전</button>
-          <button class="tab" type="button" role="tab" data-stage="2"><span class="tab-num">2</span>계산기 도전</button>
-          <button class="tab" type="button" role="tab" data-stage="3"><span class="tab-num">3</span>컴퓨터 도전</button>
-          <button class="tab" type="button" role="tab" data-stage="4"><span class="tab-num">4</span>암호문 해독</button>
+          <button class="tab is-active" type="button" role="tab" data-stage="1"><span class="tab-num">1</span>공개키·개인키</button>
+          <button class="tab" type="button" role="tab" data-stage="2"><span class="tab-num">2</span>암산 도전</button>
+          <button class="tab" type="button" role="tab" data-stage="3"><span class="tab-num">3</span>계산기 도전</button>
+          <button class="tab" type="button" role="tab" data-stage="4"><span class="tab-num">4</span>컴퓨터 도전</button>
+          <button class="tab" type="button" role="tab" data-stage="5"><span class="tab-num">5</span>암호문 해독</button>
         </nav>
       </div>
     </header>
@@ -114,56 +122,142 @@
       <!-- ───────────── 1단계 ───────────── -->
       <section id="stage-1" class="panel" role="tabpanel">
         <header class="panel-head">
-          <svg class="icon panel-icon"><use href="#i-divide"/></svg>
+          <svg class="icon panel-icon"><use href="#i-shield"/></svg>
           <div>
-            <h2 class="panel-title">1단계: 암산으로 소인수분해하기</h2>
-            <p class="panel-desc">두 자리 소수 두 개를 곱해서 만든 N이에요. 머릿속으로 <b class="accent">N = p × q</b>가 되는 두 소수를 찾아보세요!</p>
+            <h2 class="panel-title">1단계: 숫자 쪼개기가 보안과 무슨 상관일까?</h2>
+            <p class="panel-desc">컴퓨터는 <b class="accent">공개키</b>와 <b class="accent">개인키</b>로 비밀을 지켜요. 두 키가 소인수분해와 어떻게 이어지는지 알아봐요!</p>
           </div>
         </header>
 
-        <div class="panel-body cols-primes">
-          <div class="well">
-            <span class="well-corner">맞힌 문제 <b id="s1-solved">0</b></span>
-            <div class="well-label">모듈러스 N</div>
-            <div id="s1-n" class="big-n">····</div>
-            <div class="well-actions">
-              <button id="s1-new" class="btn btn-ghost btn-sm" type="button"><svg class="icon"><use href="#i-refresh"/></svg>새로운 문제</button>
-              <button id="s1-hint" class="btn btn-ghost btn-sm" type="button"><svg class="icon"><use href="#i-bulb"/></svg><span id="s1-hint-label">힌트</span></button>
+        <div class="panel-body cols-keys">
+          <div class="card">
+            <div class="card-head">
+              <h3><svg class="icon"><use href="#i-key"/></svg>공개키와 개인키</h3>
+            </div>
+            <div class="key-card">
+              <div class="key-card-head">
+                <svg class="icon"><use href="#i-unlock"/></svg><b>공개키</b><span>= 열린 자물쇠</span>
+                <span class="tag">누구에게나 공개</span>
+              </div>
+              <p>누구에게나 알려 줘도 되는 정보예요. 누구나 이 자물쇠로 메시지를 <b>잠글</b> 수 있어요 (암호화).</p>
+              <div class="key-nums"><span>N = <b id="s1-n">-</b></span><span>e = <b id="s1-e">-</b></span></div>
+            </div>
+            <div class="key-card is-private">
+              <div class="key-card-head">
+                <svg class="icon"><use href="#i-key"/></svg><b>개인키</b><span>= 자물쇠를 여는 열쇠</span>
+                <span class="tag tag-secret">주인만 보관</span>
+              </div>
+              <p>주인만 비밀로 간직하는 정보예요. 잠긴 메시지는 이 열쇠로만 <b>열</b> 수 있어요 (복호화).</p>
+              <div class="key-nums"><span>d = <b id="s1-d" data-state="idle">????</b></span><small id="s1-leaked" class="leaked" hidden>해커에게 들통났어요!</small></div>
+            </div>
+            <!-- 글자 A(숫자 65)를 공개키로 잠갔다가 개인키로 여는 예. 숫자는 stage1.py가 계산해서 채운다 -->
+            <div class="key-flow">
+              <div class="flow-node"><small>보내는 사람</small><b id="s1-m-in">-</b><small>글자 A</small></div>
+              <div class="flow-arrow"><svg class="icon"><use href="#i-arrow"/></svg>공개키로<br>잠그기</div>
+              <div class="flow-node is-locked"><small>암호문</small><b id="s1-c">-</b><small>훔쳐봐도 몰라요</small></div>
+              <div class="flow-arrow"><svg class="icon"><use href="#i-arrow"/></svg>개인키로<br>열기</div>
+              <div class="flow-node is-open"><small>받는 사람</small><b id="s1-m-out">-</b><small>글자 A</small></div>
             </div>
           </div>
 
-          <div class="side">
-            <form id="s1-form" class="answer-card" autocomplete="off">
-              <div class="side-label">N = p × q 가 되는 두 소수는?</div>
-              <div class="answer-row">
-                <input id="s1-p" class="num-input" inputmode="numeric" maxlength="6" placeholder="p" aria-label="p">
-                <span class="times">×</span>
-                <input id="s1-q" class="num-input" inputmode="numeric" maxlength="6" placeholder="q" aria-label="q">
-              </div>
-              <button class="btn btn-primary btn-lg btn-block" type="submit"><svg class="icon"><use href="#i-check"/></svg>정답 확인</button>
-              <button id="s1-giveup" class="btn btn-text" type="button">포기하고 정답 보기</button>
-            </form>
-            <p id="s1-feedback" class="feedback reserve" role="status" hidden></p>
+          <div class="card">
+            <div class="card-head">
+              <h3><svg class="icon"><use href="#i-eye"/></svg>공개키만 보고 개인키를 알아낼 수 있을까?</h3>
+            </div>
+            <p class="card-desc">개인키 d를 만들려면 N을 만든 두 소수 p, q가 필요해요.</p>
+            <table class="crack-table">
+              <thead>
+                <tr><td></td><th scope="col">연습용 키</th><th scope="col">실제 RSA-2048 키 <small id="s1-real-size"></small></th></tr>
+              </thead>
+              <tbody>
+                <tr><th scope="row">공개키 N</th><td id="s1-small-n">-</td><td id="s1-real-n" class="is-long">-</td></tr>
+                <tr class="crack-step is-hard"><td></td><td colspan="2"><svg class="icon"><use href="#i-arrow"/></svg>N = p × q로 쪼개기 (소인수분해)<em>여기가 어려워요!</em></td></tr>
+                <tr><th scope="row">두 소수 p, q</th><td id="s1-pq" data-state="idle">?</td><td id="s1-real-pq" data-state="idle">?</td></tr>
+                <tr class="crack-step"><td></td><td colspan="2"><svg class="icon"><use href="#i-arrow"/></svg>p, q로 개인키 계산하기<em>금방 끝나요 (5단계에서 직접!)</em></td></tr>
+                <tr><th scope="row">개인키 d</th><td id="s1-found-d" data-state="idle">?</td><td id="s1-real-d" data-state="idle">?</td></tr>
+              </tbody>
+            </table>
+            <button id="s1-crack" class="btn btn-primary btn-lg btn-block crack-btn" type="button"><svg class="icon"><use href="#i-unlock"/></svg>해커처럼 개인키 찾아보기</button>
+            <p id="s1-feedback" class="feedback reserve small" role="status" hidden></p>
           </div>
 
-          <aside class="primes-card">
-            <div id="s1-primes-title" class="primes-title">두 자리 소수</div>
-            <div id="s1-primes" class="primes few"></div>
-          </aside>
+          <div class="card">
+            <div class="card-head">
+              <h3><svg class="icon"><use href="#i-globe"/></svg>실제로 어디에 쓰일까?</h3>
+            </div>
+            <p class="card-desc">RSA 같은 공개키 암호가 매일 우리를 지켜요.</p>
+            <ul class="uses">
+              <li><svg class="icon"><use href="#i-lock"/></svg><div><b>웹사이트 주소창의 자물쇠</b><small>https 사이트가 진짜인지 확인하고 내용을 지켜요</small></div></li>
+              <li><svg class="icon"><use href="#i-card"/></svg><div><b>인터넷 쇼핑·은행</b><small>카드 번호와 비밀번호가 새어 나가지 않게 해요</small></div></li>
+              <li><svg class="icon"><use href="#i-pen"/></svg><div><b>공동인증서·전자서명</b><small>개인키로 서명하면 누구나 공개키로 '진짜 나'인지 확인해요</small></div></li>
+              <li><svg class="icon"><use href="#i-download"/></svg><div><b>프로그램·앱 업데이트</b><small>업데이트 파일이 진짜 회사에서 왔는지 확인해요</small></div></li>
+            </ul>
+            <p class="card-note">※ RSA 말고 다른 공개키 암호(타원곡선 암호 등)도 함께 쓰여요.</p>
+          </div>
         </div>
 
-        <aside class="lesson">
+        <aside class="lesson lesson-cta">
           <h3>알아 두기</h3>
-          <p>숫자가 작을 때는 금방 두 소수로 쪼갤 수 있어요. RSA에서 N을 p와 q로 쪼갤 수 있으면, 누구나 비밀키를 만들어 암호를 풀 수 있습니다.</p>
+          <div class="lesson-row">
+            <p>곱하기(p × q → N)는 쉽지만, 거꾸로 쪼개기(N → p × q)는 아주 어려워요. 그래서 공개키를 모두에게 알려 줘도 개인키는 안전하답니다. 이제 직접 N을 쪼개 보면서 얼마나 어려운지 느껴 보세요!</p>
+            <button class="btn btn-primary btn-sm" type="button" data-stage="2">2단계 암산 도전<svg class="icon"><use href="#i-arrow"/></svg></button>
+          </div>
         </aside>
       </section>
 
       <!-- ───────────── 2단계 ───────────── -->
       <section id="stage-2" class="panel" role="tabpanel" hidden>
         <header class="panel-head">
+          <svg class="icon panel-icon"><use href="#i-divide"/></svg>
+          <div>
+            <h2 class="panel-title">2단계: 암산으로 소인수분해하기</h2>
+            <p class="panel-desc">두 자리 소수 두 개를 곱해서 만든 N이에요. 머릿속으로 <b class="accent">N = p × q</b>가 되는 두 소수를 찾아보세요!</p>
+          </div>
+        </header>
+
+        <div class="panel-body cols-primes">
+          <div class="well">
+            <span class="well-corner">맞힌 문제 <b id="s2-solved">0</b></span>
+            <div class="well-label">모듈러스 N</div>
+            <div id="s2-n" class="big-n">····</div>
+            <div class="well-actions">
+              <button id="s2-new" class="btn btn-ghost btn-sm" type="button"><svg class="icon"><use href="#i-refresh"/></svg>새로운 문제</button>
+              <button id="s2-hint" class="btn btn-ghost btn-sm" type="button"><svg class="icon"><use href="#i-bulb"/></svg><span id="s2-hint-label">힌트</span></button>
+            </div>
+          </div>
+
+          <div class="side">
+            <form id="s2-form" class="answer-card" autocomplete="off">
+              <div class="side-label">N = p × q 가 되는 두 소수는?</div>
+              <div class="answer-row">
+                <input id="s2-p" class="num-input" inputmode="numeric" maxlength="6" placeholder="p" aria-label="p">
+                <span class="times">×</span>
+                <input id="s2-q" class="num-input" inputmode="numeric" maxlength="6" placeholder="q" aria-label="q">
+              </div>
+              <button class="btn btn-primary btn-lg btn-block" type="submit"><svg class="icon"><use href="#i-check"/></svg>정답 확인</button>
+              <button id="s2-giveup" class="btn btn-text" type="button">포기하고 정답 보기</button>
+            </form>
+            <p id="s2-feedback" class="feedback reserve" role="status" hidden></p>
+          </div>
+
+          <aside class="primes-card">
+            <div id="s2-primes-title" class="primes-title">두 자리 소수</div>
+            <div id="s2-primes" class="primes few"></div>
+          </aside>
+        </div>
+
+        <aside class="lesson">
+          <h3>알아 두기</h3>
+          <p>숫자가 작을 때는 금방 두 소수로 쪼갤 수 있어요. RSA에서 N을 p와 q로 쪼갤 수 있으면, 누구나 개인키를 만들어 암호를 풀 수 있습니다.</p>
+        </aside>
+      </section>
+
+      <!-- ───────────── 3단계 ───────────── -->
+      <section id="stage-3" class="panel" role="tabpanel" hidden>
+        <header class="panel-head">
           <svg class="icon panel-icon"><use href="#i-calc"/></svg>
           <div>
-            <h2 class="panel-title">2단계: 계산기로 도전하기</h2>
+            <h2 class="panel-title">3단계: 계산기로 도전하기</h2>
             <p class="panel-desc">스마트폰 계산기로 N을 나눠 보면서 N = p × q가 되는 두 소수를 찾아보세요. 시간을 재요!</p>
           </div>
         </header>
@@ -171,35 +265,35 @@
         <div class="panel-body cols-primes">
           <div class="well">
             <div class="well-label">모듈러스 N</div>
-            <div id="s2-n" class="big-n is-blank">??????</div>
+            <div id="s3-n" class="big-n is-blank">??????</div>
             <div class="well-actions">
-              <button id="s2-start" class="btn btn-primary" type="button"><svg class="icon"><use id="s2-start-icon" href="#i-play"/></svg><span id="s2-start-label">도전 시작</span></button>
+              <button id="s3-start" class="btn btn-primary" type="button"><svg class="icon"><use id="s3-start-icon" href="#i-play"/></svg><span id="s3-start-label">도전 시작</span></button>
             </div>
           </div>
 
           <div class="side">
             <div class="stats">
-              <div class="stat"><div class="stat-label">경과 시간</div><div id="s2-time" class="stat-value">00:00</div></div>
-              <div class="stat"><div class="stat-label">시도 횟수</div><div id="s2-attempts" class="stat-value accent">0</div></div>
+              <div class="stat"><div class="stat-label">경과 시간</div><div id="s3-time" class="stat-value">00:00</div></div>
+              <div class="stat"><div class="stat-label">시도 횟수</div><div id="s3-attempts" class="stat-value accent">0</div></div>
             </div>
-            <form id="s2-form" class="answer-card" autocomplete="off">
+            <form id="s3-form" class="answer-card" autocomplete="off">
               <div class="answer-row">
-                <input id="s2-p" class="num-input" inputmode="numeric" maxlength="8" placeholder="p" aria-label="p">
+                <input id="s3-p" class="num-input" inputmode="numeric" maxlength="8" placeholder="p" aria-label="p">
                 <span class="times">×</span>
-                <input id="s2-q" class="num-input" inputmode="numeric" maxlength="8" placeholder="q" aria-label="q">
+                <input id="s3-q" class="num-input" inputmode="numeric" maxlength="8" placeholder="q" aria-label="q">
               </div>
               <div class="btn-row">
-                <button id="s2-check" class="btn btn-primary grow" type="submit"><svg class="icon"><use href="#i-check"/></svg>정답 확인</button>
-                <button id="s2-plus" class="btn btn-ghost" type="button" title="계산기로 한 번 나눠 볼 때마다 눌러 주세요">시도 횟수 +1</button>
+                <button id="s3-check" class="btn btn-primary grow" type="submit"><svg class="icon"><use href="#i-check"/></svg>정답 확인</button>
+                <button id="s3-plus" class="btn btn-ghost" type="button" title="계산기로 한 번 나눠 볼 때마다 눌러 주세요">시도 횟수 +1</button>
               </div>
-              <button id="s2-giveup" class="btn btn-text" type="button">포기하고 정답 보기</button>
+              <button id="s3-giveup" class="btn btn-text" type="button">포기하고 정답 보기</button>
             </form>
-            <p id="s2-feedback" class="feedback reserve" role="status" hidden></p>
+            <p id="s3-feedback" class="feedback reserve" role="status" hidden></p>
           </div>
 
           <aside class="primes-card">
-            <div id="s2-primes-title" class="primes-title">두~세 자리 소수</div>
-            <div id="s2-primes" class="primes many"></div>
+            <div id="s3-primes-title" class="primes-title">두~세 자리 소수</div>
+            <div id="s3-primes" class="primes many"></div>
           </aside>
         </div>
 
@@ -209,19 +303,19 @@
         </aside>
       </section>
 
-      <!-- ───────────── 3단계 ───────────── -->
-      <section id="stage-3" class="panel" role="tabpanel" hidden>
+      <!-- ───────────── 4단계 ───────────── -->
+      <section id="stage-4" class="panel" role="tabpanel" hidden>
         <header class="panel-head">
           <svg class="icon panel-icon"><use href="#i-cpu"/></svg>
           <div>
-            <h2 class="panel-title">3단계: 컴퓨터에게 맡겨 보기</h2>
+            <h2 class="panel-title">4단계: 컴퓨터에게 맡겨 보기</h2>
             <p class="panel-desc">컴퓨터도 사람처럼 3, 5, 7, 9, … 를 차례로 나눠 봐요. 다만 1초에 수백만 번 나눌 수 있죠. 난이도를 골라 보세요!</p>
           </div>
         </header>
 
         <div class="levels" role="radiogroup" aria-label="난이도 선택">
           <button class="level-opt is-active" type="button" role="radio" aria-checked="true" data-level="small">
-            <span class="level level-1">LEVEL 1</span><b>6자리 N</b><small>2단계 계산기 문제 정도</small>
+            <span class="level level-1">LEVEL 1</span><b>6자리 N</b><small>3단계 계산기 문제 정도</small>
           </button>
           <button class="level-opt" type="button" role="radio" aria-checked="false" data-level="medium">
             <span class="level level-2">LEVEL 2</span><b>10~12자리 N</b><small>사람이라면 며칠~몇 주 걸리는 크기</small>
@@ -238,29 +332,29 @@
           <div class="card">
             <div class="card-head">
               <h3><svg class="icon"><use href="#i-key"/></svg>대상 모듈러스 N</h3>
-              <span id="s3-size" class="tag">-</span>
+              <span id="s4-size" class="tag">-</span>
             </div>
             <div class="draw-row">
-              <span id="s3-pool" class="draw-label"></span>
-              <button id="s3-draw" class="btn btn-ghost btn-sm" type="button"><svg class="icon"><use href="#i-refresh"/></svg>다른 예시 뽑기</button>
+              <span id="s4-pool" class="draw-label"></span>
+              <button id="s4-draw" class="btn btn-ghost btn-sm" type="button"><svg class="icon"><use href="#i-refresh"/></svg>다른 예시 뽑기</button>
             </div>
-            <div id="s3-n" class="target-n">-</div>
-            <p id="s3-note" class="card-desc"></p>
-            <button id="s3-run" class="btn btn-primary btn-lg btn-block run-btn" type="button"><svg class="icon"><use href="#i-cpu"/></svg>컴퓨터에게 소인수분해 시키기</button>
+            <div id="s4-n" class="target-n">-</div>
+            <p id="s4-note" class="card-desc"></p>
+            <button id="s4-run" class="btn btn-primary btn-lg btn-block run-btn" type="button"><svg class="icon"><use href="#i-cpu"/></svg>컴퓨터에게 소인수분해 시키기</button>
           </div>
 
           <div class="card">
             <div class="card-head">
               <h3><svg class="icon"><use href="#i-chart"/></svg>계산 결과</h3>
             </div>
-            <div class="progress"><span id="s3-bar"></span></div>
+            <div class="progress"><span id="s4-bar"></span></div>
             <div class="result-grid">
-              <div><div class="r-label">소요 시간</div><div id="s3-time" class="r-value">-</div></div>
-              <div><div class="r-label">나눠 본 횟수</div><div id="s3-count" class="r-value">-</div></div>
-              <div><div class="r-label">해독 가능 여부</div><div id="s3-verdict" class="r-value verdict" data-state="idle">대기 중</div></div>
+              <div><div class="r-label">소요 시간</div><div id="s4-time" class="r-value">-</div></div>
+              <div><div class="r-label">나눠 본 횟수</div><div id="s4-count" class="r-value">-</div></div>
+              <div><div class="r-label">해독 가능 여부</div><div id="s4-verdict" class="r-value verdict" data-state="idle">대기 중</div></div>
             </div>
-            <div id="s3-detail" class="target-detail"></div>
-            <button id="s3-reveal" class="btn btn-ghost btn-sm reveal-btn" type="button" hidden><svg class="icon"><use href="#i-key"/></svg>N을 만든 사람만 아는 정답 보기</button>
+            <div id="s4-detail" class="target-detail"></div>
+            <button id="s4-reveal" class="btn btn-ghost btn-sm reveal-btn" type="button" hidden><svg class="icon"><use href="#i-key"/></svg>N을 만든 사람만 아는 정답 보기</button>
           </div>
         </div>
 
@@ -269,20 +363,20 @@
           <p>여기서 컴퓨터는 가장 단순한 방법(하나씩 나눠 보기)을 썼어요. 훨씬 똑똑한 알고리즘(GNFS)을 써도 2020년 250자리 수(RSA-250)를 분해하는 데 CPU 코어 하나로 약 <b class="accent">2,700년</b> 걸릴 만큼의 계산이 필요했어요. 지금 널리 쓰는 RSA-2048(617자리)도 아직 아무도 분해하지 못했는데, RSA-8192는 그보다 4배 긴 키입니다.</p>
         </aside>
 
-        <dialog id="s3-dialog" class="dialog" closedby="any">
+        <dialog id="s4-dialog" class="dialog" closedby="any">
           <h3><svg class="icon"><use href="#i-key"/></svg>N을 만든 사람만 아는 정답</h3>
           <p>N을 만든 사람(개인키 주인)은 처음부터 p와 q를 알고 있어요. 이 두 수 없이는 아무도 암호를 풀 수 없습니다.</p>
-          <div id="s3-answers" class="dialog-body"></div>
+          <div id="s4-answers" class="dialog-body"></div>
           <form method="dialog" class="dialog-actions"><button class="btn btn-primary" type="submit">닫기</button></form>
         </dialog>
       </section>
 
-      <!-- ───────────── 4단계 ───────────── -->
-      <section id="stage-4" class="panel" role="tabpanel" hidden>
+      <!-- ───────────── 5단계 ───────────── -->
+      <section id="stage-5" class="panel" role="tabpanel" hidden>
         <header class="panel-head">
           <svg class="icon panel-icon"><use href="#i-unlock"/></svg>
           <div>
-            <h2 class="panel-title">4단계: 암호문 해독하기</h2>
+            <h2 class="panel-title">5단계: 암호문 해독하기</h2>
             <p class="panel-desc">공개키 (N, e)와 암호문만 공개되어 있어요. N을 만든 두 소수 p, q로 개인키를 만들어 비밀 메시지를 풀어 보세요!</p>
           </div>
         </header>
@@ -294,32 +388,32 @@
               <span class="tag">누구나 볼 수 있음</span>
             </div>
             <div class="row">
-              <select id="s4-size" class="text-input select grow" aria-label="키 크기">
+              <select id="s5-size" class="text-input select grow" aria-label="키 크기">
                 <option value="2">두 자리 소수 (암산 가능)</option>
                 <option value="3">세 자리 소수 (계산기 필요)</option>
                 <option value="5">다섯 자리 소수 (컴퓨터 필요)</option>
               </select>
-              <button id="s4-new" class="btn btn-ghost btn-sm" type="button"><svg class="icon"><use href="#i-refresh"/></svg>새 비밀 메시지</button>
+              <button id="s5-new" class="btn btn-ghost btn-sm" type="button"><svg class="icon"><use href="#i-refresh"/></svg>새 비밀 메시지</button>
             </div>
             <div class="key-row">
-              <div class="key-val grow"><span>공개키 N</span><b id="s4-n">-</b></div>
-              <div class="key-val"><span>공개키 e</span><b id="s4-e">-</b></div>
+              <div class="key-val grow"><span>공개키 N</span><b id="s5-n">-</b></div>
+              <div class="key-val"><span>공개키 e</span><b id="s5-e">-</b></div>
             </div>
             <div class="field-label cipher-head">
               <span>암호문 C <small>(숫자 하나 = 1바이트)</small></span>
-              <span id="s4-mine" class="tag tag-secret" hidden>직접 만듦</span>
-              <small id="s4-cipher-count" class="count"></small>
+              <span id="s5-mine" class="tag tag-secret" hidden>직접 만듦</span>
+              <small id="s5-cipher-count" class="count"></small>
             </div>
-            <div id="s4-cipher" class="cipher-box"></div>
+            <div id="s5-cipher" class="cipher-box"></div>
             <div class="divider"></div>
             <h4 class="sub-head"><svg class="icon"><use href="#i-pen"/></svg>직접 암호문 만들기</h4>
-            <form id="s4-enc-form" class="row tight" autocomplete="off">
-              <input id="s4-msg" class="text-input grow" maxlength="60" placeholder="비밀 메시지를 입력하세요">
+            <form id="s5-enc-form" class="row tight" autocomplete="off">
+              <input id="s5-msg" class="text-input grow" maxlength="60" placeholder="비밀 메시지를 입력하세요">
               <button class="btn btn-primary btn-sm" type="submit">암호화</button>
             </form>
           </div>
 
-          <form id="s4-form" class="card" autocomplete="off">
+          <form id="s5-form" class="card" autocomplete="off">
             <div class="card-head">
               <h3><svg class="icon"><use href="#i-key"/></svg>개인키로 해독하기</h3>
               <span class="tag tag-secret">p, q를 아는 사람만</span>
@@ -327,20 +421,20 @@
             <p class="card-desc">N을 만든 두 소수 p, q를 아는 사람만 개인키 d를 만들 수 있어요.</p>
             <div class="factor-box">
               <span class="factor-label">N = p × q</span>
-              <div class="factor-eq"><span id="s4-n-again">-</span> = <b id="s4-pq">-</b></div>
+              <div class="factor-eq"><span id="s5-n-again">-</span> = <b id="s5-pq">-</b></div>
             </div>
             <button class="btn btn-primary btn-lg btn-block decrypt-btn" type="submit"><svg class="icon"><use href="#i-unlock"/></svg>해독하기</button>
-            <p id="s4-feedback" class="feedback reserve small" role="status" hidden></p>
+            <p id="s5-feedback" class="feedback reserve small" role="status" hidden></p>
             <div class="field-label">해독된 메시지</div>
-            <div id="s4-plain" class="plaintext big"></div>
+            <div id="s5-plain" class="plaintext big"></div>
           </form>
 
           <div class="card">
             <div class="card-head">
               <h3><svg class="icon"><use href="#i-list"/></svg>해독 과정</h3>
             </div>
-            <p id="s4-steps-empty" class="empty">'해독하기'를 누르면, 개인키를 만들고 암호를 푸는 계산 과정이 여기에 나타나요.</p>
-            <ol id="s4-steps" class="steps" hidden></ol>
+            <p id="s5-steps-empty" class="empty">'해독하기'를 누르면, 개인키를 만들고 암호를 푸는 계산 과정이 여기에 나타나요.</p>
+            <ol id="s5-steps" class="steps" hidden></ol>
           </div>
         </div>
 

@@ -7,6 +7,7 @@
     "./py/stage1.py": "./stage1.py",
     "./py/stage2.py": "./stage2.py",
     "./py/stage3.py": "./stage3.py",
-    "./py/stage4.py": "./stage4.py"
+    "./py/stage4.py": "./stage4.py",
+    "./py/stage5.py": "./stage5.py"
   }
 }

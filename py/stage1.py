@@ -1,81 +1,101 @@
-"""1단계: 암산으로 소인수분해하기 — 두 자리 소수 두 개를 곱한 N."""
+"""1단계: 공개키와 개인키 — 숫자 쪼개기(소인수분해)가 어려운 것이 컴퓨터 보안과 무슨 상관인지 알아보기.
+
+공개키 (N, e)는 누구에게나 알려 주고, 개인키 d는 주인만 비밀로 간직한다.
+공개키만 보고 개인키를 알아내려면 N을 p × q로 쪼개야 한다.
+작은 N은 금방 쪼개져서 개인키가 들통나지만, 실제 RSA의 N은 너무 커서 쪼갤 수 없다.
+"""
+import asyncio
+import math
+
 from pyscript import when
 
+import rsa_examples
 import rsa_math
-from dom import answer_text, comma, el, focus_empty, josa, message, prime_list, set_text, set_value, show, to_int, value_of
+from dom import comma, el, josa, message, run_async, set_state, set_text, show
 
-PRIME_RANGE = (11, 97)  # 두 자리 소수
+P, Q = 61, 53                            # 연습용 키를 만드는 두 소수 (시작 화면의 61 × 53 = 3,233과 같다)
+REAL_P, REAL_Q = rsa_examples.LEVEL3[0]  # 비교할 실제 RSA-2048 키 (4단계 LEVEL 3의 첫 번째 예시)
+MESSAGE = 65                             # 잠갔다가 여는 예시 메시지: 글자 A를 숫자로 바꾼 값 (index.html의 '글자 A'와 같게)
+STEP_SECONDS = 0.6                       # 해커가 찾은 값을 한 줄씩 보여 주는 간격(초)
 
-state = {"p": 0, "q": 0, "n": 0, "hints": 0, "done": False, "solved": 0}
+N = P * Q
+E = rsa_math.choose_e((P - 1) * (Q - 1))
+D = rsa_math.private_key(P, Q, E)[1]
+REAL_N = REAL_P * REAL_Q
+CELLS = ("s1-pq", "s1-found-d", "s1-real-pq", "s1-real-d")  # 해커가 찾아서 채우는 칸
+
+reveal = {"round": 0}  # 한 줄씩 보여 주는 애니메이션의 차례 번호 (바뀌면 하던 애니메이션은 멈춘다)
 
 
-def new_problem():
-    p, q, n = rsa_math.random_semiprime(PRIME_RANGE)
-    state.update(p=p, q=q, n=n, hints=0, done=False)
-    set_text("s1-n", comma(n))
-    set_text("s1-hint-label", "힌트")
-    set_value("s1-p", "")
-    set_value("s1-q", "")
+def set_cell(cell_id, text, state):
+    set_text(cell_id, text)
+    set_state(cell_id, state)
+    el(cell_id).classList.add("pop")
+
+
+def clear():
+    """해커가 찾아보기 전: 모르는 칸은 모두 '?'이고, 개인키는 주인만 안다."""
+    reveal["round"] += 1  # 진행 중인 애니메이션 멈추기
+    for cell_id in CELLS:
+        set_text(cell_id, "?")
+        set_state(cell_id, "idle")
+        el(cell_id).classList.remove("pop")
+    set_text("s1-d", "????")
+    set_state("s1-d", "idle")
+    show("s1-leaked", False)
     show("s1-feedback", False)
 
 
 def setup():
-    prime_list("s1-primes", "s1-primes-title", "두 자리 소수", rsa_math.primes_between(*PRIME_RANGE))
-    new_problem()
+    cipher = pow(MESSAGE, E, N)
+    set_text("s1-n", comma(N))
+    set_text("s1-e", E)
+    set_text("s1-m-in", MESSAGE)
+    set_text("s1-c", comma(cipher))
+    set_text("s1-m-out", pow(cipher, D, N))  # 개인키로 열면 다시 MESSAGE
+    set_text("s1-small-n", comma(N))
+    digits = str(REAL_N)
+    set_text("s1-real-n", f"{digits[:10]}…{digits[-10:]}")
+    set_text("s1-real-size", f"({len(digits)}자리)")
+    clear()
 
 
 def reset():
-    """다음 사람을 위해 맞힌 문제 수를 0으로 하고 새 문제를 낸다."""
-    state["solved"] = 0
-    set_text("s1-solved", 0)
-    new_problem()
+    """다음 사람을 위해 해커가 찾아보기 전으로 되돌린다."""
+    clear()
 
 
-@when("click", "#s1-new")
-def on_new(event):
-    new_problem()
-    el("s1-p").focus()
+async def crack():
+    """해커처럼: 공개키 N을 3, 5, 7, … 로 차례로 나눠서 쪼개고, 찾은 p, q로 개인키를 계산한다."""
+    clear()
+    my_round = reveal["round"]
+    p = rsa_math.find_divisor(N, 3, math.isqrt(N) + 1)
+    q = N // p
+    tried = len(range(3, p + 1, 2))  # 나눠 본 홀수의 개수
+    d = rsa_math.private_key(p, q, E)[1]
 
-
-@when("click", "#s1-hint")
-def on_hint(event):
-    p, q = state["p"], state["q"]
-    state["hints"] += 1
-    if state["hints"] == 1:
-        tens = p // 10 * 10
-        message("s1-feedback", f"힌트: 작은 소수 p는 {tens}~{tens + 9} 사이에 있어요.", "info")
-        set_text("s1-hint-label", "정답 보기")
-    else:
-        state["done"] = True
-        message("s1-feedback", f"정답은 {comma(state['n'])} = {p} × {q}입니다.", "info")
-
-
-@when("click", "#s1-giveup")
-def on_giveup(event):
-    state["done"] = True
-    message("s1-feedback", f"{answer_text(state['n'], state['p'], state['q'])} '새로운 문제'로 다시 도전해 보세요!", "info")
-
-
-@when("submit", "#s1-form")
-def on_submit(event):
-    event.preventDefault()
-    if focus_empty("s1-p", "s1-q"):
+    await asyncio.sleep(STEP_SECONDS)
+    if reveal["round"] != my_round:
         return
-    p, q = to_int(value_of("s1-p")), to_int(value_of("s1-q"))
-    n = state["n"]
-    if p is None or q is None:
-        message("s1-feedback", "p와 q 칸에 숫자를 입력해 주세요.", "err")
-    elif p * q != n:
-        message("s1-feedback", f"아쉬워요! {p} × {q} = {comma(p * q)}{josa(p * q, '이에요', '예요')}. 다시 도전!", "err")
-    elif 1 in (p, q):
-        message("s1-feedback", "1 × N은 너무 쉽죠? 1이 아닌 두 소수를 찾아보세요.", "err")
-    else:
-        if not state["done"]:
-            state["done"] = True
-            state["solved"] += 1
-            set_text("s1-solved", state["solved"])
-        message(
-            "s1-feedback",
-            f"정답! {comma(n)} = {min(p, q)} × {max(p, q)} — 이 두 소수가 바로 비밀키의 재료예요.",
-            "ok",
-        )
+    set_cell("s1-pq", f"{p} × {q}", "ok")  #   = 줄바꿈 없는 띄어쓰기: 칸이 좁아도 p × q는 한 줄에
+    set_cell("s1-real-pq", "쪼갤 수 없음", "err")
+
+    await asyncio.sleep(STEP_SECONDS)
+    if reveal["round"] != my_round:
+        return
+    set_cell("s1-found-d", comma(d), "ok")
+    set_cell("s1-real-d", "찾을 수 없음", "err")
+    set_text("s1-d", comma(d))
+    set_state("s1-d", "err")
+    show("s1-leaked")
+    message(
+        "s1-feedback",
+        f"{tried}번 나눠서 {comma(N)}{josa(N, '을', '를')} 쪼갰더니 개인키 {comma(d)}{josa(d, '이', '가')} 들통났어요! "
+        f"하지만 {len(str(REAL_N))}자리 N은 쪼갤 수 없어서 개인키가 안전해요.",
+        "info",
+    )
+
+
+@when("click", "#s1-crack")
+def on_crack(event):
+    run_async(crack())

@@ -83,7 +83,7 @@ sup { font-size: 0.7em; line-height: 0; }
   transition: opacity 0.35s, visibility 0.35s;
 }
 .intro.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
-.intro-inner { display: flex; flex-direction: column; align-items: center; width: min(100%, 74rem); }
+.intro-inner { display: flex; flex-direction: column; align-items: center; width: min(100%, 86rem); }
 
 .intro-logo {
   width: 4.6rem;
@@ -106,10 +106,10 @@ sup { font-size: 0.7em; line-height: 0; }
 .intro-formula .easy { color: var(--mint); }
 .intro-formula .hard { color: var(--blue); }
 
-/* 1~4단계 안내: 상자 하나를 네 칸으로 나눈다 */
+/* 1~5단계 안내: 상자 하나를 다섯 칸으로 나눈다 */
 .intro-steps {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   width: 100%;
   margin: 2.4rem 0 0;
   padding: 0;
@@ -243,7 +243,7 @@ sup { font-size: 0.7em; line-height: 0; }
   border: 1px solid var(--line);
   border-radius: 0.9rem;
 }
-#stage-2 { --accent: var(--blue); --accent-ink: var(--blue-ink); }
+#stage-3 { --accent: var(--blue); --accent-ink: var(--blue-ink); }
 
 .panel-head {
   display: flex;
@@ -268,6 +268,7 @@ sup { font-size: 0.7em; line-height: 0; }
 .cols-2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 .cols-primes { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 0.62fr); }
 .cols-3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr); }
+.cols-keys { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1fr); }
 
 /* ── 숫자 표시 칸 ───────────────────────────────────── */
 .well {
@@ -298,7 +299,7 @@ sup { font-size: 0.7em; line-height: 0; }
 .big-n.is-blank { color: var(--text-faint); }
 .well-actions { display: flex; justify-content: center; gap: 0.7rem; flex-wrap: wrap; }
 
-/* ── 1·2단계: 입력 영역 ─────────────────────────────── */
+/* ── 2·3단계: 입력 영역 ─────────────────────────────── */
 .side { display: flex; flex-direction: column; gap: 1rem; }
 .side-label { color: var(--text-dim); font-size: 1.15rem; font-weight: 600; text-align: center; }
 .answer-card {
@@ -345,7 +346,7 @@ sup { font-size: 0.7em; line-height: 0; }
 .num-input:disabled { opacity: 0.45; }
 .select { width: auto; padding-block: 0.5rem; font-size: 0.92rem; cursor: pointer; }
 
-/* ── 1·2단계: 옆의 소수 목록 ───────────────────────── */
+/* ── 2·3단계: 옆의 소수 목록 ───────────────────────── */
 .primes-card {
   display: flex;
   flex-direction: column;
@@ -412,6 +413,7 @@ sup { font-size: 0.7em; line-height: 0; }
 .row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.9rem; }
 .row.tight { margin-top: 0.5rem; }
 .grow { flex: 1; min-width: 0; }
+.nowrap { white-space: nowrap; }
 
 /* ── 안내 문구 ───────────────────────────────────────── */
 .feedback {
@@ -485,8 +487,125 @@ sup { font-size: 0.7em; line-height: 0; }
 }
 .tag-secret { color: var(--mint); background: rgba(62, 230, 193, 0.1); border-color: rgba(62, 230, 193, 0.3); }
 .empty { margin-top: 1rem; color: var(--text-faint); }
+.card-note { margin-top: auto; padding-top: 0.7rem; font-size: 0.85rem; color: var(--text-faint); }
 
-/* ── 2단계: 시간 / 시도 횟수 ─────────────────────────── */
+/* ── 1단계: 공개키와 개인키 ──────────────────────────── */
+/* 공개키는 파랑(누구나 볼 수 있음), 개인키는 민트(주인만) — 5단계의 표시와 같은 색 */
+.key-card {
+  margin-top: 0.85rem;
+  padding: 0.75rem 1rem 0.8rem;
+  background: var(--surface);
+  border: 1px solid rgba(77, 168, 255, 0.3);
+  border-radius: 0.75rem;
+}
+.key-card.is-private { border-color: rgba(62, 230, 193, 0.3); }
+.key-card-head { display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem 0.45rem; font-size: 1.15rem; }
+.key-card-head .icon { color: var(--blue); }
+.key-card.is-private .key-card-head .icon { color: var(--mint); }
+.key-card-head span:not(.tag) { color: var(--text-dim); }
+.key-card-head .tag { margin-left: auto; }
+.key-card p { margin-top: 0.3rem; font-size: 1rem; color: var(--text-dim); }
+.key-card p b { color: var(--text); }
+.key-nums { display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem 1.3rem; margin-top: 0.3rem; font-family: var(--mono); color: var(--text-faint); }
+.key-nums b { font-size: 1.4rem; color: var(--blue); }
+.key-card.is-private .key-nums b { color: var(--mint); }
+.key-card .key-nums b[data-state="idle"] { color: var(--text-faint); letter-spacing: 0.08em; } /* 주인만 아는 값 */
+.key-card .key-nums b[data-state="err"] { color: var(--danger); }                              /* 해커에게 들통남 */
+.leaked {
+  padding: 0.05rem 0.6rem;
+  font-family: var(--font);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--danger);
+  background: rgba(255, 93, 122, 0.1);
+  border: 1px solid rgba(255, 93, 122, 0.35);
+  border-radius: 999px;
+}
+
+/* 보내는 사람 → 암호문 → 받는 사람 */
+.key-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: auto; /* 카드의 맨 아래에 */
+  padding-top: 0.9rem;
+}
+.flow-node {
+  padding: 0.4rem 0.3rem;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+}
+.flow-node small { display: block; font-size: 0.8rem; line-height: 1.4; color: var(--text-faint); }
+.flow-node b { display: block; font-family: var(--mono); font-size: 1.5rem; line-height: 1.3; white-space: nowrap; }
+.flow-node.is-locked { border-color: rgba(77, 168, 255, 0.4); }
+.flow-node.is-locked b { color: var(--blue); }
+.flow-node.is-open { border-color: rgba(62, 230, 193, 0.4); }
+.flow-node.is-open b { color: var(--mint); }
+.flow-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 4.8rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--text-dim);
+}
+.flow-arrow .icon { width: 1.3rem; height: 1.3rem; color: var(--text-faint); }
+
+/* 해커처럼 개인키 찾기: 연습용 키와 실제 RSA-2048 키를 나란히 */
+.crack-table { width: 100%; margin: 0.7rem 0 0.9rem; border-collapse: separate; border-spacing: 0.4rem 0; }
+.crack-table thead th { padding: 0 0.3rem 0.25rem; font-size: 0.85rem; font-weight: 600; color: var(--text-faint); }
+.crack-table thead small { font-size: inherit; font-weight: 400; }
+.crack-table tbody th { padding-right: 0.2rem; text-align: left; font-size: 0.95rem; font-weight: 600; color: var(--text-dim); white-space: nowrap; }
+.crack-table td {
+  padding: 0.4rem 0.6rem;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  white-space: nowrap; /* 3,233 같은 짧은 수는 칸이 좁아도 한 줄로 (긴 N과 안내 글은 아래에서 줄바꿈 허용) */
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+}
+.crack-table thead td { background: none; border: 0; } /* 왼쪽 위 빈칸 */
+.crack-table td.is-long { font-size: 0.9rem; font-weight: 600; color: var(--text-dim); white-space: normal; overflow-wrap: anywhere; }
+.crack-table td[data-state="idle"] { color: var(--text-faint); }
+.crack-table td[data-state="ok"] { color: var(--mint); border-color: rgba(62, 230, 193, 0.45); background: rgba(62, 230, 193, 0.07); }
+.crack-table td[data-state="err"] { font-family: var(--font); font-size: 1rem; white-space: normal; color: var(--danger); border-color: rgba(255, 93, 122, 0.4); background: rgba(255, 93, 122, 0.06); }
+.crack-step td { padding: 0.3rem 0; text-align: center; font-family: var(--font); font-size: 0.9rem; font-weight: 600; white-space: normal; color: var(--text-dim); background: none; border: 0; }
+.crack-step .icon { margin-right: 0.3rem; vertical-align: -0.2em; color: var(--text-faint); transform: rotate(90deg); } /* → 를 ↓ 로 */
+.crack-step em { margin-left: 0.5rem; font-style: normal; color: var(--mint); }
+.crack-step.is-hard em { color: var(--danger); }
+.crack-btn { margin-top: auto; }
+.crack-btn + .feedback { margin-top: 0.7rem; }
+
+/* 실제로 어디에 쓰일까? */
+.uses { display: flex; flex-direction: column; gap: 0.55rem; margin: 0.8rem 0 0; padding: 0; list-style: none; }
+.uses li {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.7rem;
+}
+.uses .icon { width: 1.6rem; height: 1.6rem; color: var(--accent); }
+.uses b { display: block; font-size: 1.08rem; }
+.uses small { display: block; font-size: 0.92rem; line-height: 1.45; color: var(--text-dim); }
+
+/* 알아 두기 + '2단계로' 버튼: 제목·본문·버튼의 가운데를 맞춘다 */
+.lesson.lesson-cta { align-items: center; }
+.lesson-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem 1.4rem; }
+.lesson-row p { flex: 1 1 30rem; }
+
+/* ── 3단계: 시간 / 시도 횟수 ─────────────────────────── */
 .stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -500,7 +619,7 @@ sup { font-size: 0.7em; line-height: 0; }
 .stat-value { font-family: var(--mono); font-size: 3rem; font-weight: 800; line-height: 1.25; color: var(--text); }
 .stat-value.accent { color: var(--accent); }
 
-/* ── 3단계: 난이도 선택 ──────────────────────────────── */
+/* ── 4단계: 난이도 선택 ──────────────────────────────── */
 .levels { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.8rem; }
 .level-opt {
   display: grid;
@@ -544,7 +663,7 @@ sup { font-size: 0.7em; line-height: 0; }
 .level-3 { color: #ffb35c; border-color: rgba(255, 179, 92, 0.45); background: rgba(255, 179, 92, 0.08); }
 .level-real { color: var(--danger); border-color: rgba(255, 93, 122, 0.45); background: rgba(255, 93, 122, 0.08); }
 
-/* ── 3단계: 예시 뽑기 + 대상 N ───────────────────────── */
+/* ── 4단계: 예시 뽑기 + 대상 N ───────────────────────── */
 .draw-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.9rem; }
 .draw-label { font-size: 0.88rem; font-weight: 600; color: var(--text-dim); }
 .draw-row .btn { margin-left: auto; }
@@ -575,7 +694,7 @@ sup { font-size: 0.7em; line-height: 0; }
 }
 .run-btn { margin-top: 1rem; }
 
-/* ── 3단계: 계산 결과 ────────────────────────────────── */
+/* ── 4단계: 계산 결과 ────────────────────────────────── */
 .progress { height: 0.4rem; margin-top: 1rem; overflow: hidden; background: var(--surface-2); border-radius: 999px; }
 .progress > span {
   display: block;
@@ -659,7 +778,7 @@ sup { font-size: 0.7em; line-height: 0; }
   border-radius: 0.7rem;
 }
 
-/* ── 4단계: 암호문 해독 ──────────────────────────────── */
+/* ── 5단계: 암호문 해독 ──────────────────────────────── */
 .key-row { display: flex; gap: 0.7rem; margin-top: 0.75rem; }
 .key-val {
   display: flex;
@@ -756,7 +875,7 @@ sup { font-size: 0.7em; line-height: 0; }
 .steps b { display: block; font-size: 0.95rem; }
 .steps code { display: block; font-family: var(--mono); font-size: 0.88rem; color: var(--mint); overflow-wrap: anywhere; }
 .steps small { display: block; font-size: 0.8rem; color: var(--text-faint); }
-/* 1~3단계는 제목과 계산식을 한 줄에 (칸이 좁으면 자동으로 줄바꿈) */
+/* 해독 과정의 1~3번째 줄은 제목과 계산식을 한 줄에 (칸이 좁으면 자동으로 줄바꿈) */
 .steps li.inline { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 0.9rem; }
 .steps li.inline code { flex: 1 1 auto; text-align: right; }
 .steps li.inline small { flex-basis: 100%; text-align: right; }
@@ -797,12 +916,18 @@ sup { font-size: 0.7em; line-height: 0; }
   .steps li::before { top: 0.45rem; }
   .byte-table td { padding-block: 0.1rem; }
   .plaintext.big { flex-basis: 0; overflow: auto; align-items: safe center; } /* 아주 긴 메시지는 상자 안에서 스크롤 */
+  .key-card { margin-top: 0.55rem; padding-block: 0.5rem 0.55rem; }
+  .key-flow { padding-top: 0.6rem; }
+  .crack-table { margin-block: 0.5rem 0.6rem; }
+  .crack-table td { padding-block: 0.3rem; }
+  .uses { gap: 0.4rem; margin-top: 0.6rem; }
+  .uses li { padding-block: 0.45rem; }
 }
 
 /* ── 좁은 화면(태블릿·휴대폰): 한 줄로 쌓고 스크롤 ─────── */
 @media (max-width: 1000px) {
   html { font-size: 15px; }
-  .cols-2, .cols-primes, .cols-3 { grid-template-columns: minmax(0, 1fr); }
+  .cols-2, .cols-primes, .cols-3, .cols-keys { grid-template-columns: minmax(0, 1fr); }
   .levels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .panel-head { flex-wrap: wrap; }
   .cipher-box { flex: none; max-height: 10rem; }
@@ -813,8 +938,9 @@ sup { font-size: 0.7em; line-height: 0; }
   .intro { place-items: start center; }
   .intro-title { font-size: 2.8rem; }
   .intro-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .intro-steps li:nth-child(3) { border-left: 0; }
-  .intro-steps li:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  .intro-steps li:first-child { grid-column: 1 / -1; } /* 1단계(설명)는 한 줄을 다 쓰고, 2~5단계는 두 칸씩 */
+  .intro-steps li:nth-child(even) { border-left: 0; }
+  .intro-steps li:nth-child(n + 2) { border-top: 1px solid var(--line); }
 }
 @media (max-width: 680px) {
   .intro-title { font-size: 2.1rem; }
@@ -823,6 +949,9 @@ sup { font-size: 0.7em; line-height: 0; }
   .intro-steps li + li { border-left: 0; border-top: 1px solid var(--line); }
   .intro .start-btn { min-width: 0; width: 100%; }
   .tabs { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+  .tab:first-child { grid-column: 1 / -1; } /* 1단계 탭은 한 줄을 다 쓰고, 2~5단계는 두 칸씩 */
+  .flow-node b { font-size: 1.1rem; }        /* 1단계 잠그기·열기 그림: 폭이 좁아도 2,790이 한 줄에 */
+  .flow-arrow { max-width: 3.6rem; font-size: 0.7rem; }
   .panel { padding: 1.2rem 1rem; }
   .card { padding: 1.1rem 1rem; }
   .title { font-size: 1.35rem; }
