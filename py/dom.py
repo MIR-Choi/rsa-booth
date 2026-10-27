@@ -1,5 +1,6 @@
-"""화면(HTML)을 다루는 작은 도우미 함수들."""
+"""화면(HTML)을 다루는 작은 도우미 함수들. 여러 단계가 함께 쓰는 것(답 읽기, 무작위 뽑기 등)도 여기에 둔다."""
 import asyncio
+import random
 
 from pyscript import document
 
@@ -103,6 +104,32 @@ def josa(n, after_batchim, otherwise):
 def answer_text(n, p, q):
     """포기했을 때 보여 주는 정답. 예) '정답은 1,271 = 31 × 41이었어요.' / '… = 11 × 29였어요.'"""
     return f"정답은 {comma(n)} = {p} × {q}{josa(q, '이었어요', '였어요')}."
+
+
+ONE_TIMES_N = "1 × N은 너무 쉽죠? 1이 아닌 두 소수를 찾아보세요."  # 2·3단계에서 1 × N을 답으로 냈을 때
+
+
+def read_answer(p_id, q_id, feedback_id):
+    """2·3단계의 p, q 두 칸을 숫자로 읽는다. 한 칸만 비어 있으면 그 칸으로 커서를 옮기고,
+    숫자가 아닌 것이 있으면 안내 문구를 보여 준다. 둘 다 숫자일 때만 (p, q), 아니면 None."""
+    if focus_empty(p_id, q_id):
+        return None
+    p, q = to_int(value_of(p_id)), to_int(value_of(q_id))
+    if p is None or q is None:
+        message(feedback_id, "p와 q 칸에 숫자를 입력해 주세요.", "err")
+        return None
+    return p, q
+
+
+def draw_from(bag, items, last=None):
+    """items 중 하나를 무작위로 뽑는다 (4단계 예시, 5단계 비밀 메시지).
+    bag(리스트)에 아직 안 뽑은 것을 담아 두고 하나씩 꺼내서, 한 바퀴를 다 돌기 전에는 같은 것이 다시 나오지 않는다.
+    다 꺼내면 새로 섞는데, 이때 방금 뽑은 last가 곧바로 다시 나오지 않게 한다."""
+    if not bag:
+        bag.extend(random.sample(items, len(items)))
+        if len(bag) > 1 and bag[-1] == last:
+            bag.insert(0, bag.pop())
+    return bag.pop()
 
 
 def prime_list(list_id, title_id, title, primes):

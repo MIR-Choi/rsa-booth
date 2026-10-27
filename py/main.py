@@ -14,8 +14,8 @@ import stage4
 import stage5
 from dom import el, run_async, set_text
 
-STAGES = ("1", "2", "3", "4", "5")
 MODULES = (stage1, stage2, stage3, stage4, stage5)
+STAGES = tuple(str(number) for number in range(1, len(MODULES) + 1))  # "1" ~ "5": 탭의 data-stage, 주소의 #stage-N
 screen = {"lock": None}  # 화면 꺼짐 방지 (다른 창으로 가면 브라우저가 풀고, 돌아오면 다시 건다)
 
 

@@ -5,14 +5,13 @@
 """
 import asyncio
 import math
-import random
 import time
 
 from pyscript import document, when
 
 import rsa_examples
 import rsa_math
-from dom import comma, el, run_async, set_html, set_state, set_text, show
+from dom import comma, draw_from, el, run_async, set_html, set_state, set_text, show
 
 TIME_LIMITS = {"rsa2048": 5, "rsa8192": 10}  # 큰 N은 컴퓨터가 난이도마다 이 시간(초)만큼 계산해 보고 포기한다
 HUMAN_SECONDS = 5     # 사람이 계산기로 한 번 나누는 데 걸린다고 가정한 시간(초)
@@ -71,15 +70,9 @@ def power_html(log10_value):
 # ── 예시 뽑기 ───────────────────────────────────────────
 
 def draw(level):
-    """준비된 예시 중 하나를 무작위로 뽑는다. 한 바퀴를 다 돌면 다시 섞는다."""
-    bag = bags.get(level)
-    if not bag:
-        bag = list(range(len(LEVELS[level]["pairs"])))
-        random.shuffle(bag)
-        if level == current["level"] and len(bag) > 1 and bag[-1] == current["index"]:
-            bag.insert(0, bag.pop())  # 방금 본 예시가 곧바로 다시 나오지 않게
-        bags[level] = bag
-    return bag.pop()
+    """준비된 예시 중 하나의 번호를 무작위로 뽑는다. 한 바퀴를 다 돌면 다시 섞는다."""
+    last = current["index"] if level == current["level"] else None  # 같은 난이도에서 방금 본 예시
+    return draw_from(bags.setdefault(level, []), range(len(LEVELS[level]["pairs"])), last)
 
 
 def current_example():

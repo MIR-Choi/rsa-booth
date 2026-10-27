@@ -1,12 +1,11 @@
 """5단계: 암호문 해독하기 — 공개키 (N, e)와 암호문 하나를 보고, N = p × q로 개인키를 만들어 풀어 보기."""
 import asyncio
 import html
-import random
 
 from pyscript import when
 
 import rsa_math
-from dom import comma, el, josa, message, run_async, set_html, set_text, set_value, show, value_of
+from dom import comma, draw_from, el, josa, message, run_async, set_html, set_text, set_value, show, value_of
 
 KEY_SIZES = {
     "2": (11, 97),        # 두 자리 소수 → 2단계처럼 암산 가능
@@ -55,11 +54,7 @@ typing = {"round": 0}  # 해독한 글자를 하나씩 보여 주는 애니메�
 
 def draw_message():
     """준비된 메시지 중 하나를 무작위로 뽑는다. 한 바퀴를 다 돌면 다시 섞는다."""
-    if not bag:
-        bag.extend(random.sample(SECRET_MESSAGES, len(SECRET_MESSAGES)))
-        if len(bag) > 1 and bag[-1] == state["last"]:
-            bag.insert(0, bag.pop())  # 방금 본 메시지가 곧바로 다시 나오지 않게
-    state["last"] = bag.pop()
+    state["last"] = draw_from(bag, SECRET_MESSAGES, state["last"])
     return state["last"]
 
 

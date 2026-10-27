@@ -5,7 +5,7 @@ import time
 from pyscript import when
 
 import rsa_math
-from dom import answer_text, comma, el, focus_empty, message, prime_list, run_async, set_text, set_value, show, to_int, value_of
+from dom import ONE_TIMES_N, answer_text, comma, el, message, prime_list, read_answer, run_async, set_text, set_value, show
 
 P_RANGE = (23, 997)   # 작은 쪽 소수: 두~세 자리 (너무 쉬운 11~19는 뺐어요)
 Q_RANGE = (101, 997)  # 큰 쪽 소수: 세 자리
@@ -95,18 +95,16 @@ def on_submit(event):
     event.preventDefault()
     if not state["running"]:
         return
-    if focus_empty("s3-p", "s3-q"):
+    answer = read_answer("s3-p", "s3-q", "s3-feedback")
+    if answer is None:
         return
-    p, q = to_int(value_of("s3-p")), to_int(value_of("s3-q"))
+    p, q = answer
     n = state["n"]
-    if p is None or q is None:
-        message("s3-feedback", "p와 q 칸에 숫자를 입력해 주세요.", "err")
-        return
     add_attempt()
     if p * q != n:
         message("s3-feedback", f"{p} × {q} = {comma(p * q)} — 아직 아니에요. 계속 나눠 보세요!", "err")
     elif 1 in (p, q):
-        message("s3-feedback", "1 × N은 너무 쉽죠? 1이 아닌 두 소수를 찾아보세요.", "err")
+        message("s3-feedback", ONE_TIMES_N, "err")
     else:
         finish()
         message(

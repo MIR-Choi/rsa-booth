@@ -2,7 +2,7 @@
 from pyscript import when
 
 import rsa_math
-from dom import answer_text, comma, el, focus_empty, josa, message, prime_list, set_text, set_value, show, to_int, value_of
+from dom import ONE_TIMES_N, answer_text, comma, el, josa, message, prime_list, read_answer, set_text, set_value, show
 
 PRIME_RANGE = (11, 97)  # 두 자리 소수
 
@@ -59,16 +59,15 @@ def on_giveup(event):
 @when("submit", "#s2-form")
 def on_submit(event):
     event.preventDefault()
-    if focus_empty("s2-p", "s2-q"):
+    answer = read_answer("s2-p", "s2-q", "s2-feedback")
+    if answer is None:
         return
-    p, q = to_int(value_of("s2-p")), to_int(value_of("s2-q"))
+    p, q = answer
     n = state["n"]
-    if p is None or q is None:
-        message("s2-feedback", "p와 q 칸에 숫자를 입력해 주세요.", "err")
-    elif p * q != n:
+    if p * q != n:
         message("s2-feedback", f"아쉬워요! {p} × {q} = {comma(p * q)}{josa(p * q, '이에요', '예요')}. 다시 도전!", "err")
     elif 1 in (p, q):
-        message("s2-feedback", "1 × N은 너무 쉽죠? 1이 아닌 두 소수를 찾아보세요.", "err")
+        message("s2-feedback", ONE_TIMES_N, "err")
     else:
         if not state["done"]:
             state["done"] = True

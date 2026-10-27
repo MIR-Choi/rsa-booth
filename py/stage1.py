@@ -27,21 +27,19 @@ CELLS = ("s1-pq", "s1-found-d", "s1-real-pq", "s1-real-d")  # 해커가 찾아�
 reveal = {"round": 0}  # 한 줄씩 보여 주는 애니메이션의 차례 번호 (바뀌면 하던 애니메이션은 멈춘다)
 
 
-def set_cell(cell_id, text, state):
+def set_cell(cell_id, text, state, pop=False):
+    """칸의 글자와 색(data-state)을 바꾼다. pop=True면 살짝 튀어나오며 나타난다."""
     set_text(cell_id, text)
     set_state(cell_id, state)
-    el(cell_id).classList.add("pop")
+    el(cell_id).classList.toggle("pop", pop)
 
 
 def clear():
     """해커가 찾아보기 전: 모르는 칸은 모두 '?'이고, 개인키는 주인만 안다."""
     reveal["round"] += 1  # 진행 중인 애니메이션 멈추기
     for cell_id in CELLS:
-        set_text(cell_id, "?")
-        set_state(cell_id, "idle")
-        el(cell_id).classList.remove("pop")
-    set_text("s1-d", "????")
-    set_state("s1-d", "idle")
+        set_cell(cell_id, "?", "idle")
+    set_cell("s1-d", "????", "idle")
     show("s1-leaked", False)
     show("s1-feedback", False)
 
@@ -73,20 +71,16 @@ async def crack():
     q = N // p
     tried = len(range(3, p + 1, 2))  # 나눠 본 홀수의 개수
     d = rsa_math.private_key(p, q, E)[1]
-
-    await asyncio.sleep(STEP_SECONDS)
-    if reveal["round"] != my_round:
-        return
-    set_cell("s1-pq", f"{p} × {q}", "ok")  #   = 줄바꿈 없는 띄어쓰기: 칸이 좁아도 p × q는 한 줄에
-    set_cell("s1-real-pq", "쪼갤 수 없음", "err")
-
-    await asyncio.sleep(STEP_SECONDS)
-    if reveal["round"] != my_round:
-        return
-    set_cell("s1-found-d", comma(d), "ok")
-    set_cell("s1-real-d", "찾을 수 없음", "err")
-    set_text("s1-d", comma(d))
-    set_state("s1-d", "err")
+    frames = (  # 표를 한 줄씩 채운다: 쪼갠 결과 → 개인키 (왼쪽 '개인키 d'도 함께 들통). \u00a0 = 줄바꿈 없는 띄어쓰기
+        (("s1-pq", f"{p}\u00a0×\u00a0{q}", "ok"), ("s1-real-pq", "쪼갤 수 없음", "err")),
+        (("s1-found-d", comma(d), "ok"), ("s1-real-d", "찾을 수 없음", "err"), ("s1-d", comma(d), "err")),
+    )
+    for frame in frames:
+        await asyncio.sleep(STEP_SECONDS)
+        if reveal["round"] != my_round:
+            return
+        for cell_id, text, state in frame:
+            set_cell(cell_id, text, state, pop=True)
     show("s1-leaked")
     message(
         "s1-feedback",
