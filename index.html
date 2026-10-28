@@ -71,7 +71,7 @@
     <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
     <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></symbol>
     <symbol id="i-card" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></symbol>
-    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
   </svg>
 
@@ -141,24 +141,24 @@
                 <svg class="icon"><use href="#i-unlock"/></svg><b>공개키</b><span>= 열린 자물쇠</span>
                 <span class="tag">누구에게나 공개</span>
               </div>
-              <p>누구에게나 알려 줘도 되는 정보예요. 누구나 이 자물쇠로 메시지를 <b>잠글</b> 수 있어요 (암호화).</p>
+              <p>내가 모두에게 나눠 주는 숫자예요. 누구나 이 자물쇠로 메시지를 찰칵 <b>잠글</b> 수 있지만, <b>열</b> 수는 없어요.</p>
               <div class="key-nums"><span>N = <b id="s1-n">-</b></span><span>e = <b id="s1-e">-</b></span></div>
             </div>
             <div class="key-card is-private">
               <div class="key-card-head">
                 <svg class="icon"><use href="#i-key"/></svg><b>개인키</b><span>= 자물쇠를 여는 열쇠</span>
-                <span class="tag tag-secret">주인만 보관</span>
+                <span class="tag tag-secret">나만 보관</span>
               </div>
-              <p>주인만 비밀로 간직하는 정보예요. 잠긴 메시지는 이 열쇠로만 <b>열</b> 수 있어요 (복호화).</p>
+              <p>나만 아는 비밀 숫자예요. 잠긴 메시지는 이 열쇠로만 <b>열려요</b>.</p>
               <div class="key-nums"><span>d = <b id="s1-d" data-state="idle">????</b></span><small id="s1-leaked" class="leaked" hidden>해커에게 들통났어요!</small></div>
             </div>
-            <!-- 글자 A(숫자 65)를 공개키로 잠갔다가 개인키로 여는 예. 숫자는 stage1.py가 계산해서 채운다 -->
+            <!-- 친구가 글자 A(숫자 65)를 내 공개키로 잠가 보내고, 내가 개인키로 여는 예. 숫자는 stage1.py가 계산해서 채운다 -->
             <div class="key-flow">
-              <div class="flow-node"><small>보내는 사람</small><b id="s1-m-in">-</b><small>글자 A</small></div>
-              <div class="flow-arrow"><svg class="icon"><use href="#i-arrow"/></svg>공개키로<br>잠그기</div>
+              <div class="flow-node"><small>친구가 보내요</small><b id="s1-m-in">-</b><small>글자 A</small></div>
+              <div class="flow-arrow"><svg class="icon"><use href="#i-arrow"/></svg>공개키로<br>잠그기<small>(암호화)</small></div>
               <div class="flow-node is-locked"><small>암호문</small><b id="s1-c">-</b><small>훔쳐봐도 몰라요</small></div>
-              <div class="flow-arrow"><svg class="icon"><use href="#i-arrow"/></svg>개인키로<br>열기</div>
-              <div class="flow-node is-open"><small>받는 사람</small><b id="s1-m-out">-</b><small>글자 A</small></div>
+              <div class="flow-arrow"><svg class="icon"><use href="#i-arrow"/></svg>개인키로<br>열기<small>(복호화)</small></div>
+              <div class="flow-node is-open"><small>내가 받아요</small><b id="s1-m-out">-</b><small>글자 A</small></div>
             </div>
           </div>
 
@@ -192,7 +192,7 @@
               <li><svg class="icon"><use href="#i-lock"/></svg><div><b>웹사이트 주소창의 자물쇠</b><small>https 사이트가 진짜인지 확인하고 내용을 지켜요</small></div></li>
               <li><svg class="icon"><use href="#i-card"/></svg><div><b>인터넷 쇼핑·은행</b><small>카드 번호와 비밀번호가 새어 나가지 않게 해요</small></div></li>
               <li><svg class="icon"><use href="#i-pen"/></svg><div><b>공동인증서·전자서명</b><small>개인키로 서명하면 누구나 공개키로 '진짜 나'인지 확인해요</small></div></li>
-              <li><svg class="icon"><use href="#i-download"/></svg><div><b>프로그램·앱 업데이트</b><small>업데이트 파일이 진짜 회사에서 왔는지 확인해요</small></div></li>
+              <li><svg class="icon"><use href="#i-chat"/></svg><div><b>메신저·이메일</b><small>메시지를 중간에서 훔쳐봐도 읽을 수 없게 잠가요</small></div></li>
             </ul>
             <p class="card-note">※ RSA 말고 다른 공개키 암호(타원곡선 암호 등)도 함께 쓰여요.</p>
           </div>
