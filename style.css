@@ -11,11 +11,18 @@
   --text-dim: #93a3b1;
   --text-faint: #5f707f;
 
-  --mint: #3ee6c1;
+  /* 포인트 색은 R, G, B 숫자로 여기에 한 번만 적는다. 반투명 색은 rgba(var(--mint-rgb), 0.1)처럼 이 숫자를 가져다 쓴다
+     (색을 바꾸려면 이 네 줄만 고치면 된다) */
+  --mint-rgb: 62, 230, 193;
+  --blue-rgb: 77, 168, 255;
+  --danger-rgb: 255, 93, 122;
+  --orange-rgb: 255, 179, 92; /* 4단계 LEVEL 3 */
+  --mint: rgb(var(--mint-rgb));
   --mint-ink: #032019;
-  --blue: #4da8ff;
+  --blue: rgb(var(--blue-rgb));
   --blue-ink: #03162b;
-  --danger: #ff5d7a;
+  --danger: rgb(var(--danger-rgb));
+  --orange: rgb(var(--orange-rgb));
 
   --accent: var(--mint);
   --accent-ink: var(--mint-ink);
@@ -431,9 +438,9 @@ sup { font-size: 0.7em; line-height: 0; }
 .feedback.small { min-height: 2.8rem; padding: 0.5rem 0.8rem; font-size: 0.9rem; }
 /* reserve: 숨겨져 있어도 자리를 차지해서, 문구가 나타날 때 화면이 덜컹거리지 않게 */
 .feedback.reserve[hidden] { display: flex !important; visibility: hidden; }
-.feedback[data-state="ok"]   { color: var(--mint);   border-color: rgba(62, 230, 193, 0.4); background: rgba(62, 230, 193, 0.08); }
-.feedback[data-state="err"]  { color: var(--danger); border-color: rgba(255, 93, 122, 0.4); background: rgba(255, 93, 122, 0.08); }
-.feedback[data-state="info"] { color: var(--blue);   border-color: rgba(77, 168, 255, 0.4); background: rgba(77, 168, 255, 0.08); }
+.feedback[data-state="ok"]   { color: var(--mint);   border-color: rgba(var(--mint-rgb), 0.4); background: rgba(var(--mint-rgb), 0.08); }
+.feedback[data-state="err"]  { color: var(--danger); border-color: rgba(var(--danger-rgb), 0.4); background: rgba(var(--danger-rgb), 0.08); }
+.feedback[data-state="info"] { color: var(--blue);   border-color: rgba(var(--blue-rgb), 0.4); background: rgba(var(--blue-rgb), 0.08); }
 .pop { animation: pop 0.3s ease; }
 @keyframes pop { from { transform: scale(0.97); opacity: 0.3; } to { transform: none; opacity: 1; } }
 
@@ -481,11 +488,11 @@ sup { font-size: 0.7em; line-height: 0; }
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--blue);
-  background: rgba(77, 168, 255, 0.1);
-  border: 1px solid rgba(77, 168, 255, 0.3);
+  background: rgba(var(--blue-rgb), 0.1);
+  border: 1px solid rgba(var(--blue-rgb), 0.3);
   white-space: nowrap;
 }
-.tag-secret { color: var(--mint); background: rgba(62, 230, 193, 0.1); border-color: rgba(62, 230, 193, 0.3); }
+.tag-secret { color: var(--mint); background: rgba(var(--mint-rgb), 0.1); border-color: rgba(var(--mint-rgb), 0.3); }
 .empty { margin-top: 1rem; color: var(--text-faint); }
 .card-note { margin-top: auto; padding-top: 0.7rem; font-size: 0.85rem; color: var(--text-faint); }
 
@@ -495,10 +502,10 @@ sup { font-size: 0.7em; line-height: 0; }
   margin-top: 0.85rem;
   padding: 0.75rem 1rem 0.8rem;
   background: var(--surface);
-  border: 1px solid rgba(77, 168, 255, 0.3);
+  border: 1px solid rgba(var(--blue-rgb), 0.3);
   border-radius: 0.75rem;
 }
-.key-card.is-private { border-color: rgba(62, 230, 193, 0.3); }
+.key-card.is-private { border-color: rgba(var(--mint-rgb), 0.3); }
 .key-card-head { display: flex; align-items: center; flex-wrap: wrap; gap: 0.3rem 0.45rem; font-size: 1.15rem; }
 .key-card-head .icon { color: var(--blue); }
 .key-card.is-private .key-card-head .icon { color: var(--mint); }
@@ -517,8 +524,8 @@ sup { font-size: 0.7em; line-height: 0; }
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--danger);
-  background: rgba(255, 93, 122, 0.1);
-  border: 1px solid rgba(255, 93, 122, 0.35);
+  background: rgba(var(--danger-rgb), 0.1);
+  border: 1px solid rgba(var(--danger-rgb), 0.35);
   border-radius: 999px;
 }
 
@@ -540,9 +547,9 @@ sup { font-size: 0.7em; line-height: 0; }
 }
 .flow-node small { display: block; font-size: 0.8rem; line-height: 1.4; color: var(--text-faint); }
 .flow-node b { display: block; font-family: var(--mono); font-size: 1.5rem; line-height: 1.3; white-space: nowrap; }
-.flow-node.is-locked { border-color: rgba(77, 168, 255, 0.4); }
+.flow-node.is-locked { border-color: rgba(var(--blue-rgb), 0.4); }
 .flow-node.is-locked b { color: var(--blue); }
-.flow-node.is-open { border-color: rgba(62, 230, 193, 0.4); }
+.flow-node.is-open { border-color: rgba(var(--mint-rgb), 0.4); }
 .flow-node.is-open b { color: var(--mint); }
 .flow-arrow {
   display: flex;
@@ -576,8 +583,8 @@ sup { font-size: 0.7em; line-height: 0; }
 .crack-table thead td { background: none; border: 0; } /* 왼쪽 위 빈칸 */
 .crack-table td.is-long { font-size: 0.9rem; font-weight: 600; color: var(--text-dim); white-space: normal; overflow-wrap: anywhere; }
 .crack-table td[data-state="idle"] { color: var(--text-faint); }
-.crack-table td[data-state="ok"] { color: var(--mint); border-color: rgba(62, 230, 193, 0.45); background: rgba(62, 230, 193, 0.07); }
-.crack-table td[data-state="err"] { font-family: var(--font); font-size: 1rem; white-space: normal; color: var(--danger); border-color: rgba(255, 93, 122, 0.4); background: rgba(255, 93, 122, 0.06); }
+.crack-table td[data-state="ok"] { color: var(--mint); border-color: rgba(var(--mint-rgb), 0.45); background: rgba(var(--mint-rgb), 0.07); }
+.crack-table td[data-state="err"] { font-family: var(--font); font-size: 1rem; white-space: normal; color: var(--danger); border-color: rgba(var(--danger-rgb), 0.4); background: rgba(var(--danger-rgb), 0.06); }
 .crack-step td { padding: 0.3rem 0; text-align: center; font-family: var(--font); font-size: 0.9rem; font-weight: 600; white-space: normal; color: var(--text-dim); background: none; border: 0; }
 .crack-step .icon { margin-right: 0.3rem; vertical-align: -0.2em; color: var(--text-faint); transform: rotate(90deg); } /* → 를 ↓ 로 */
 .crack-step em { margin-left: 0.5rem; font-style: normal; color: var(--mint); }
@@ -641,7 +648,7 @@ sup { font-size: 0.7em; line-height: 0; }
 .level-opt:hover:not(:disabled) { border-color: var(--line-strong); background: var(--surface); }
 .level-opt.is-active {
   border-color: var(--mint);
-  background: rgba(62, 230, 193, 0.07);
+  background: rgba(var(--mint-rgb), 0.07);
   box-shadow: inset 0 0 0 1px var(--mint);
 }
 .level-opt.is-active small { color: var(--text-dim); }
@@ -658,10 +665,10 @@ sup { font-size: 0.7em; line-height: 0; }
   letter-spacing: 0.04em;
   white-space: nowrap;
 }
-.level-1 { color: var(--mint); border-color: rgba(62, 230, 193, 0.45); background: rgba(62, 230, 193, 0.08); }
-.level-2 { color: var(--blue); border-color: rgba(77, 168, 255, 0.45); background: rgba(77, 168, 255, 0.08); }
-.level-3 { color: #ffb35c; border-color: rgba(255, 179, 92, 0.45); background: rgba(255, 179, 92, 0.08); }
-.level-real { color: var(--danger); border-color: rgba(255, 93, 122, 0.45); background: rgba(255, 93, 122, 0.08); }
+.level-1 { color: var(--mint); border-color: rgba(var(--mint-rgb), 0.45); background: rgba(var(--mint-rgb), 0.08); }
+.level-2 { color: var(--blue); border-color: rgba(var(--blue-rgb), 0.45); background: rgba(var(--blue-rgb), 0.08); }
+.level-3 { color: var(--orange); border-color: rgba(var(--orange-rgb), 0.45); background: rgba(var(--orange-rgb), 0.08); }
+.level-real { color: var(--danger); border-color: rgba(var(--danger-rgb), 0.45); background: rgba(var(--danger-rgb), 0.08); }
 
 /* ── 4단계: 예시 뽑기 + 대상 N ───────────────────────── */
 .draw-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.9rem; }
@@ -743,8 +750,8 @@ sup { font-size: 0.7em; line-height: 0; }
 }
 .estimates li {
   padding: 0.5rem 0.85rem;
-  background: rgba(255, 93, 122, 0.06);
-  border: 1px solid rgba(255, 93, 122, 0.25);
+  background: rgba(var(--danger-rgb), 0.06);
+  border: 1px solid rgba(var(--danger-rgb), 0.25);
   border-radius: 0.65rem;
 }
 .estimates span { display: block; font-size: 0.8rem; color: var(--text-faint); }
@@ -819,7 +826,7 @@ sup { font-size: 0.7em; line-height: 0; }
   padding: 0.8rem 1rem;
   text-align: center;
   background: var(--surface);
-  border: 1px solid rgba(62, 230, 193, 0.3);
+  border: 1px solid rgba(var(--mint-rgb), 0.3);
   border-radius: 0.8rem;
 }
 .factor-label { font-size: 0.8rem; font-weight: 600; color: var(--text-faint); }
@@ -838,9 +845,9 @@ sup { font-size: 0.7em; line-height: 0; }
   font-size: 1.15rem;
   font-weight: 800;
   color: var(--mint);
-  border: 1px solid rgba(62, 230, 193, 0.45);
+  border: 1px solid rgba(var(--mint-rgb), 0.45);
   border-radius: 0.7rem;
-  background: rgba(62, 230, 193, 0.07);
+  background: rgba(var(--mint-rgb), 0.07);
   word-break: keep-all;     /* 띄어쓰기가 있으면 낱말 단위로 줄바꿈하고, */
   overflow-wrap: anywhere;  /* 띄어쓰기 없이 긴 글자(영어·숫자·주소 등)는 상자 끝에서 끊는다 */
 }

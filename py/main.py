@@ -60,7 +60,8 @@ def on_home(event):
 def warm_fonts():
     """글꼴은 화면에 나온 글자의 조각만 받는다. 숨어 있는 단계의 글자와 비밀 메시지 글자도 미리 받아 두면,
     단계를 처음 열 때 글꼴이 바뀌며 깜빡이지 않고, 나중에 인터넷이 끊겨도 글꼴이 그대로 나온다."""
-    text = el("app").textContent + "".join(stage5.SECRET_MESSAGES)
+    # 받을 조각은 글자 종류로만 정해지니, 같은 글자는 한 번만 넘긴다 (화면 전체 글을 넘기면 굵기마다 브라우저가 수만 자를 훑는다)
+    text = "".join(set(el("app").textContent + "".join(stage5.SECRET_MESSAGES)))
     for weight in (400, 600, 700, 800):
         document.fonts.load(f"{weight} 16px Pretendard", text)
 

@@ -39,9 +39,11 @@
   <link rel="preload" href="py/stage4.py" as="fetch" crossorigin>
   <link rel="preload" href="py/stage5.py" as="fetch" crossorigin>
 
-  <!-- 글꼴 (Pretendard는 화면에 나온 글자가 들어 있는 조각만 내려받는 dynamic-subset 판) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap">
+  <!-- 글꼴 (Pretendard는 화면에 나온 글자가 들어 있는 조각만 내려받는 dynamic-subset 판).
+       preload로 받기 시작해서 다 받으면(onload) 그때 적용한다. 그냥 stylesheet로 두면 브라우저가 다른 서버의 이 CSS를
+       다 받을 때까지 화면을 그리지 않아서, 처음 접속할 때 시작 화면이 약 0.3초 늦게 뜬다 -->
+  <link rel="preload" as="style" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css" onload="this.onload = null; this.rel = 'stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" onload="this.onload = null; this.rel = 'stylesheet'">
 
   <!-- PyScript: 브라우저 안에서 파이썬을 실행해 준다
        (PyScript의 core.css는 코드 편집기·터미널용이라 넣지 않았다. 화면이 처음 나올 때 기다릴 파일이 하나 줄어든다) -->
